@@ -11,6 +11,7 @@ Alla anrop utom `POST /customers` och `/health` kräver headern `X-Customer-Id` 
 | `GET /customers/me/orders/export` | Den inloggade kundens beställningar som CSV-fil på svenska eller engelska. Se nedan. | 200, 400, 401 |
 | `POST /orders` | Lägg en beställning. Body: `{ lines: [{ product, quantity, unitPrice }], discountCode? }`. | 201, 400, 401 |
 | `GET /orders/:id` | En egen beställning med rader. | 200, 400, 401, 403, 404 |
+| `POST /orders/:id/returns` | Returnera en beställning. Body: `{ customerId, reason }`. Svar: `{ return_id, refund_amount, label_url }`. | 201 |
 | `GET /orders/:id/price` | Pris för en egen beställning: `{ net, vat, total }`. Räknas av den äldre modulen. | 200, 400, 401, 403, 404 |
 
 ## Export som CSV
