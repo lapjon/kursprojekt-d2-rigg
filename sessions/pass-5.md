@@ -59,7 +59,11 @@ Datum: 2026-10-30, cirka 12:40–13:35.
 
 - Research-sessionen: $0,30 totalt (Haiku $0,015, Sonnet $0,285), 13 min 41 s, varav 2 min 26 s modelltid.
 - TDD-sessionen (steg 1–2): inte uppmätt. `/usage` kördes inte före avslut. Kör `/usage` före `/exit` nästa gång.
-- Kvot vid 12:55: 43 % av femtimmarsfönstret, 12 % av veckan.
+- Sessionen för rättning och kontroll efter omstarten (rad 34 och de fyra kontrollerna): $0,18, 7 min 23 s, varav 56 s modelltid.
+  - Sonnet: 1,1k input, 4,1k output, 497,0k cache read, 21,7k cache write ($0,1795).
+  - Haiku: 1,3k input, 486 output ($0,0004), Claude Codes interna anrop.
+- `/tdd` stod för 6 % av förbrukningen det senaste dygnet enligt `/usage`.
+- Kvot vid 13:36: 65 % av femtimmarsfönstret, 16 % av veckan.
 
 ## Start nästa pass
 
