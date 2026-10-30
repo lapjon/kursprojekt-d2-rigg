@@ -12,4 +12,11 @@ describe("GET /customers/me/orders/export", () => {
     const res = await request(app).get("/customers/me/orders/export");
     expect(res.status).toBe(401);
   });
+
+  it("returnerar 200 med CSV-headers för kund 7", async () => {
+    const res = await request(app).get("/customers/me/orders/export").set("X-Customer-Id", "7");
+    expect(res.status).toBe(200);
+    expect(res.headers["content-type"]).toBe("text/csv; charset=utf-8");
+    expect(res.headers["content-disposition"]).toBe('attachment; filename="bestallningar.csv"');
+  });
 });

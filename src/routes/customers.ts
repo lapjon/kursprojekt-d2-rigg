@@ -25,5 +25,7 @@ customers.get("/customers/me/orders", requireCustomer, async (req, res) => {
 
 // Den inloggade kundens beställningar som CSV-fil.
 customers.get("/customers/me/orders/export", requireCustomer, (_req, res) => {
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", 'attachment; filename="bestallningar.csv"');
   res.end();
 });
