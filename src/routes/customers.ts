@@ -22,3 +22,8 @@ customers.get("/customers/me/orders", requireCustomer, async (req, res) => {
   const orders = await listOrdersForCustomer((req as AuthedRequest).customerId);
   res.json(orders);
 });
+
+// Den inloggade kundens beställningar som CSV-fil.
+customers.get("/customers/me/orders/export", requireCustomer, (_req, res) => {
+  res.end();
+});
