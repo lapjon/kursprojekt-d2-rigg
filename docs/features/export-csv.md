@@ -91,6 +91,7 @@ Underlag: `docs/research.md` (subagenten `kodutforskare`). Beslutade av Jon Lapr
 | R6 | Datum i Stockholmstid | `Intl.DateTimeFormat` med `timeZone: 'Europe/Stockholm'`. | Verifierat i Node 22: `2026-09-30T22:30:00Z` ger `2026-10-01`. Inget extra bibliotek behövs. |
 | R7 | Testfil | Ny fil `tests/export.test.ts`. | Funktionen hålls isär och är lätt att granska. |
 | R8 | Lösenord i fallback-URL:er (`src/db.ts:5`, `tests/helpers/env.ts:3`) | Ändras inte. Noteras som risk. | Lokala standardvärden för Docker i kursens repo, inga riktiga hemligheter. |
+| R9 | Radslut i CSV-filen | Varje rad, även den sista, avslutas med CRLF (`\r\n`) enligt RFC 4180. | Det är standarden, Excel läser det, och testerna kan kontrollera bodyn exakt. Beslutat under planfasen. |
 
 ## API-kontrakt
 
