@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AuthedRequest, requireCustomer } from "../auth";
-import { sendResult } from "../http";
+import { sendError, sendResult } from "../http";
+import { exportOrders } from "../services/exportService";
 import { createCustomer, getCustomer, listOrdersForCustomer } from "../services/customerService";
 
 export const customers = Router();
@@ -24,8 +25,13 @@ customers.get("/customers/me/orders", requireCustomer, async (req, res) => {
 });
 
 // Den inloggade kundens beställningar som CSV-fil.
-customers.get("/customers/me/orders/export", requireCustomer, (_req, res) => {
+customers.get("/customers/me/orders/export", requireCustomer, async (_req, res) => {
+  const result = await exportOrders();
+  if (!result.ok) {
+    sendError(res, result.error);
+    return;
+  }
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
-  res.setHeader("Content-Disposition", 'attachment; filename="bestallningar.csv"');
-  res.end();
+  res.setHeader("Content-Disposition", `attachment; filename="${result.value.filename}"`);
+  res.send(result.value.csv);
 });
