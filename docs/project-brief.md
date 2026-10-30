@@ -300,7 +300,6 @@ För VG ska mätningar användas för att motivera val och bortval, exempelvis:
 
 Följande beslut är ännu inte fattade:
 
-- API-kontrakt för den nya funktionen
 - vilket beslut som ska dokumenteras i ADR
 - vilka minst 3 skills/kommandon som ska användas
 - vilka minst 4 subagenter som ska användas

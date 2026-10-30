@@ -24,7 +24,7 @@ Grund: user story #8 i `docs/user-stories.md`. Språkstödet för sv och en är 
 
 ## Beslut
 
-Beslutade av Jon Laprevote 2026-10-30.
+Beslutade av Jon Laprevote 2026-10-30. K1–K3 gäller API-kontraktet.
 
 | # | Fråga | Beslut | Motivering |
 |---|---|---|---|
@@ -34,6 +34,9 @@ Beslutade av Jon Laprevote 2026-10-30.
 | B4 | Talformat? | sv: `375,00` med `;` som avgränsare. en: `375.00` med `,`. Ingen tusentalsavgränsare. | Excel med svenska inställningar läser `;` och decimalkomma. Utan tusentalsavgränsare undviks problem med osynliga mellanslag. |
 | B5 | Totalpris med? | Nej, bara antal och à-pris. | Totalpriset räknas i `price_calc.py`, och `docs/standard.md` kräver att all prisberäkning går via `calcPrice`. Det skulle ge en Python-process per beställning. |
 | B6 | CSV-injektion? | Neutralisera. Fält som börjar med `=`, `+`, `-` eller `@` får ett `'` först. | Produktnamnet skickas in av kunden. Ett namn som `=HYPERLINK(…)` körs som formel när filen öppnas i Excel. |
+| K1 | `?lang=SV` eller `?lang=En` | Godkänns. Värdet görs om till gemener. | Språkkoder är skiftlägesokänsliga enligt BCP 47. |
+| K2 | `?lang=` (tomt värde) | 400. | Ett tomt värde är ogiltig indata, inte ett saknat. |
+| K3 | `?lang=sv&lang=en` (dubbla) | 400. | Express gör om dubbla parametrar till en lista. Att gissa vilken som gäller är sämre än att neka. |
 
 ## Bortvalt
 
@@ -69,8 +72,14 @@ Testdata från `db/seed.sql`: kund 1 har beställningarna 1040 (1 rad) och 1042 
 13. **Givet** att headern `X-Customer-Id` saknas, **så** blir svaret 401.
 14. **Givet** kund 1, **så** innehåller filen inte beställning 1041, som tillhör kund 2.
 15. **Givet** kund 7 utan beställningar, **så** blir svaret 200 med bara rubrikraden.
+16. **Givet** `lang=SV`, **så** blir filen på svenska, som med `lang=sv`.
+17. **Givet** `lang=` utan värde, **så** blir svaret 400 med koden `invalid_input`.
+18. **Givet** `lang=sv&lang=en`, **så** blir svaret 400 med koden `invalid_input`.
+
+## API-kontrakt
+
+Se avsnittet "Export som CSV" i `docs/api.md`.
 
 ## Kvar att bestämma
 
-- API-kontraktet: endpoint, parametrar och statuskoder. `GET /customers/me/orders/export` är ett förslag.
 - ADR 0001 för det viktigaste beslutet.
