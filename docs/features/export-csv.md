@@ -32,7 +32,7 @@ Beslutade av Jon Laprevote 2026-10-30. K1–K3 gäller API-kontraktet.
 | B2 | Hur väljs språket? | `?lang=sv` eller `?lang=en`, med sv som standard. Ett språk som inte stöds ger 400. | Explicit och lätt att testa. 400 följer `docs/standard.md` för ogiltig indata. `Accept-Language` och fallback kan bli nästa steg. |
 | B3 | Datumformat? | ISO `2026-10-01` för båda språken, i tidszonen Europe/Stockholm. | Entydigt. `10/01/2026` betyder olika saker i USA och Storbritannien. Tidszonen spelar roll för beställningar nära midnatt. |
 | B4 | Talformat? | sv: `375,00` med `;` som avgränsare. en: `375.00` med `,`. Ingen tusentalsavgränsare. | Excel med svenska inställningar läser `;` och decimalkomma. Utan tusentalsavgränsare undviks problem med osynliga mellanslag. |
-| B5 | Totalpris med? | Nej, bara antal och à-pris. | Totalpriset räknas i `price_calc.py`, och `docs/standard.md` kräver att all prisberäkning går via `calcPrice`. Det skulle ge en Python-process per beställning. |
+| B5 | Totalpris med? | Nej, bara antal och à-pris. | Totalpriset räknas i `price_calc.py`, och `docs/standard.md` kräver att all prisberäkning går via `calcPrice`. Det skulle ge en Python-process per beställning. Se `docs/adr/0001-inget-totalpris-i-csv-export.md`. |
 | B6 | CSV-injektion? | Neutralisera. Fält som börjar med `=`, `+`, `-` eller `@` får ett `'` först. | Produktnamnet skickas in av kunden. Ett namn som `=HYPERLINK(…)` körs som formel när filen öppnas i Excel. |
 | K1 | `?lang=SV` eller `?lang=En` | Godkänns. Värdet görs om till gemener. | Språkkoder är skiftlägesokänsliga enligt BCP 47. |
 | K2 | `?lang=` (tomt värde) | 400. | Ett tomt värde är ogiltig indata, inte ett saknat. |
@@ -80,6 +80,6 @@ Testdata från `db/seed.sql`: kund 1 har beställningarna 1040 (1 rad) och 1042 
 
 Se avsnittet "Export som CSV" i `docs/api.md`.
 
-## Kvar att bestämma
+## ADR
 
-- ADR 0001 för det viktigaste beslutet.
+- `docs/adr/0001-inget-totalpris-i-csv-export.md` (B5).
