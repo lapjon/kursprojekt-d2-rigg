@@ -301,8 +301,6 @@ För VG ska mätningar användas för att motivera val och bortval, exempelvis:
 Följande beslut är ännu inte fattade:
 
 - vilka minst 3 skills/kommandon som ska användas
-- vilka minst 4 subagenter som ska användas
-- modellval per subagent
 - vilka minst 5 hooks som ska användas
 - exakt utformning av minneskedjan
 - allow/ask/deny-regler

@@ -9,10 +9,10 @@
 | Skill 1: /tdd | `.claude/skills/tdd/SKILL.md`, anpassad till Jest och `npm test` | `.claude/skills/tdd/SKILL.md` | Klar, ej verifierad |
 | Skill 2 | TBD | TBD | Inte påbörjad |
 | Skill 3 | TBD | TBD | Inte påbörjad |
-| Subagent 1 | TBD | TBD | Inte påbörjad |
-| Subagent 2 | TBD | TBD | Inte påbörjad |
-| Subagent 3 | TBD | TBD | Inte påbörjad |
-| Subagent 4 | TBD | TBD | Inte påbörjad |
+| Subagent 1 | `kodutforskare` (Haiku) | `.claude/agents/kodutforskare.md` | Klar, ej verifierad |
+| Subagent 2 | `granskare` (Sonnet) | `.claude/agents/granskare.md` | Klar, ej verifierad |
+| Subagent 3 | `oversattningsgranskare` (Sonnet) | `.claude/agents/oversattningsgranskare.md` | Klar, ej verifierad |
+| Subagent 4 | `legacy-arkeolog` (Sonnet) | `.claude/agents/legacy-arkeolog.md` | Klar, ej verifierad |
 | Hook 1 | TBD | TBD | Inte påbörjad |
 | Hook 2 | TBD | TBD | Inte påbörjad |
 | Hook 3 | TBD | TBD | Inte påbörjad |
