@@ -18,7 +18,7 @@
 | Hook 3 | TBD | TBD | Inte påbörjad |
 | Hook 4 | TBD | TBD | Inte påbörjad |
 | Hook 5 | TBD | TBD | Inte påbörjad |
-| Allow/Ask/Deny | `.claude/settings.json`, anpassad till detta repo | `.claude/settings.json` | Klar, ej verifierad |
+| Allow/Ask/Deny | `.claude/settings.json`, anpassad till detta repo | `.claude/settings.json`, sessions/pass-3.md | Verifierad |
 | Sessionslogg | En fil per arbetspass | sessions/ | Inte påbörjad |
 | Ny funktion | #8 CSV-export, utökad med språkstöd för sv och en | TBD | Påbörjad |
 | Agentkod-review | Lärarens PR | TBD | Inte påbörjad |
