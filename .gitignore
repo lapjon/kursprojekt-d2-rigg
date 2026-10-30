@@ -7,3 +7,5 @@ src/legacy/price_calc.log
 .claude/settings.local.json
 .venv/
 .DS_Store
+# Skrivs automatiskt av .claude/hooks/spara-lage.js efter varje svar
+sessions/senaste-lage.md
