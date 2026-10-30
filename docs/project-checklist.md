@@ -20,7 +20,7 @@
 | Hook 5 | TBD | TBD | Inte påbörjad |
 | Allow/Ask/Deny | `.claude/settings.json`, anpassad till detta repo | `.claude/settings.json`, sessions/pass-3.md | Verifierad |
 | Sessionslogg | En fil per arbetspass | sessions/ | Inte påbörjad |
-| Ny funktion | #8 CSV-export, utökad med språkstöd för sv och en | TBD | Påbörjad |
+| Ny funktion | #8 CSV-export, utökad med språkstöd för sv och en | docs/features/export-csv.md | Påbörjad |
 | Agentkod-review | Lärarens PR | TBD | Inte påbörjad |
 | Legacy codemap | price_calc.py + callers | TBD | Inte påbörjad |
 | 5 characterization tests | Python/pytest | TBD | Inte påbörjad |
