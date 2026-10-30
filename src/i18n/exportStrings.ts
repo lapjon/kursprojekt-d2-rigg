@@ -1,4 +1,4 @@
-export type ExportLang = "sv";
+export type ExportLang = "sv" | "en";
 
 export type ExportStrings = {
   headers: {
@@ -33,5 +33,25 @@ export const exportStrings: Record<ExportLang, ExportStrings> = {
     delimiter: ";",
     // Filnamn i Content-Disposition när användaren sparar exporten.
     filename: "bestallningar.csv",
+  },
+  en: {
+    headers: {
+      // Kolumnrubrik i CSV-filen, första raden: beställningens nummer.
+      order: "Order",
+      // Kolumnrubrik i CSV-filen, första raden: datumet beställningen lades.
+      date: "Date",
+      // Kolumnrubrik i CSV-filen, första raden: beställningens status.
+      status: "Status",
+      // Kolumnrubrik i CSV-filen, första raden: produktnamnet på orderraden.
+      product: "Product",
+      // Kolumnrubrik i CSV-filen, första raden: antal enheter på orderraden.
+      quantity: "Quantity",
+      // Kolumnrubrik i CSV-filen, första raden: pris per enhet.
+      unitPrice: "Unit price",
+    },
+    // Tecken som skiljer fälten åt på varje rad i CSV-filen (komma i engelsk Excel).
+    delimiter: ",",
+    // Filnamn i Content-Disposition när användaren sparar exporten.
+    filename: "orders.csv",
   },
 };

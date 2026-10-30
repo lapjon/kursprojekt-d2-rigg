@@ -24,4 +24,28 @@ describe("GET /customers/me/orders/export", () => {
     const res = await request(app).get("/customers/me/orders/export").set("X-Customer-Id", "7");
     expect(res.text).toBe("\uFEFFBeställning;Datum;Status;Produkt;Antal;À-pris\r\n");
   });
+
+  it("returnerar engelsk rubrikrad och orders.csv med lang=en", async () => {
+    const res = await request(app)
+      .get("/customers/me/orders/export?lang=en")
+      .set("X-Customer-Id", "7");
+    expect(res.status).toBe(200);
+    expect(res.headers["content-disposition"]).toBe('attachment; filename="orders.csv"');
+    expect(res.text).toBe("\uFEFFOrder,Date,Status,Product,Quantity,Unit price\r\n");
+  });
+
+  it("tolkar lang=SV som svenska", async () => {
+    const res = await request(app)
+      .get("/customers/me/orders/export?lang=SV")
+      .set("X-Customer-Id", "7");
+    expect(res.headers["content-disposition"]).toBe('attachment; filename="bestallningar.csv"');
+    expect(res.text.split("\r\n")[0]).toContain(";");
+  });
+
+  it("tolkar lang=EN som engelska", async () => {
+    const res = await request(app)
+      .get("/customers/me/orders/export?lang=EN")
+      .set("X-Customer-Id", "7");
+    expect(res.headers["content-disposition"]).toBe('attachment; filename="orders.csv"');
+  });
 });
