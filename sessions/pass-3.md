@@ -16,6 +16,9 @@ Datum: 2026-10-30. Commit: `adce56a` feat(rigg): behörigheter med allow, ask oc
 | "kör npm test" | allow `Bash(npm test *)` | Kördes utan fråga, 16 av 16 gröna |
 | "kör npm run db:reset" | ask `Bash(npm run db:reset)` | Frågade om lov, avbröts. Databaserna oförändrade. |
 
+- `/tdd` syns i Claude Code med rätt beskrivning, och skillens fält ger ingen varning (`6bc992f`).
+- Modellen bytt till Sonnet 5.5.
+
 ## Misslyckades
 
 - Första försöket med `git push` testade inte spärren. Agenten vägrade själv med hänvisning till `CLAUDE.md` och försökte aldrig köra kommandot. Instruktionen och den tekniska spärren är två lager. Spärren verifierades först med `--dry-run`.
@@ -32,6 +35,7 @@ Datum: 2026-10-30. Commit: `adce56a` feat(rigg): behörigheter med allow, ask oc
 - Standardläge i Claude Code är manual mode. Auto mode används inte, eftersom ändringar ska godkännas av människan.
 - Hook-kandidat bekräftad: SessionStart-varning när `python3` inte pekar på `.venv`. Felet inträffade två gånger under passet.
 - Byt standardmodell till Sonnet 5.5. Opus används för svåra beslut.
+- Startläget låst till manual via `defaultMode` i projektets inställningar, eftersom den personliga inställningen startade sessioner i auto mode.
 
 ## Förbrukning
 
