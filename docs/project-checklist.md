@@ -3,9 +3,9 @@
 | Krav | Planerad lösning | Bevis | Status |
 |---|---|---|---|
 | CLAUDE.md | Projektregler i repo-roten | CLAUDE.md | Påbörjad |
-| Lint | Befintligt npm-script | TBD | Baseline finns |
-| Format | Befintligt npm-script | TBD | Baseline finns |
-| Typecheck | Befintligt npm-script | TBD | Baseline finns |
+| Lint | Befintligt npm-script | sessions/pass-2.md (baslinje 3f92977) | Baslinje grön |
+| Format | Befintligt npm-script | sessions/pass-2.md (baslinje 3f92977) | Baslinje grön |
+| Typecheck | Befintligt npm-script | sessions/pass-2.md (baslinje 3f92977) | Baslinje grön |
 | Skill 1: /tdd | `.claude/skills/tdd/SKILL.md`, anpassad till Jest och `npm test` | TBD | Inte påbörjad |
 | Skill 2 | TBD | TBD | Inte påbörjad |
 | Skill 3 | TBD | TBD | Inte påbörjad |
