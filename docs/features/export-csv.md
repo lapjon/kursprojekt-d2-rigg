@@ -75,6 +75,22 @@ Testdata från `db/seed.sql`: kund 1 har beställningarna 1040 (1 rad) och 1042 
 16. **Givet** `lang=SV`, **så** blir filen på svenska, som med `lang=sv`.
 17. **Givet** `lang=` utan värde, **så** blir svaret 400 med koden `invalid_input`.
 18. **Givet** `lang=sv&lang=en`, **så** blir svaret 400 med koden `invalid_input`.
+19. **Givet** en beställning skapad 2026-10-01 00:30 svensk tid (2026-09-30 22:30 UTC), **så** står datumet `2026-10-01`. Testet skapar beställningen själv.
+
+## Beslut efter research
+
+Underlag: `docs/research.md` (subagenten `kodutforskare`). Beslutade av Jon Laprevote 2026-10-30.
+
+| # | Fråga | Beslut | Motivering |
+|---|---|---|---|
+| R1 | Var valideras `lang`? | I tjänsten. `exportOrders(customerId, lang)` returnerar `Result`. | Samma mönster som `createCustomer`. Routen blir tunn och logiken kan testas utan HTTP. |
+| R2 | CSV-hjälpare i `src/http.ts`? | Nej, headers sätts direkt i routen. | Det finns bara en CSV-endpoint. En hjälpare kan komma om en andra tillkommer. |
+| R3 | Typen på `lang` | Allt som inte är en sträng ger 400: lista, objekt och tomt värde. | Täcker K2 och K3 med en regel. |
+| R4 | Sortering vid samma tid | `ORDER BY created_at DESC, id DESC`, orderrader `ORDER BY id`. | Deterministisk ordning och stabila tester. |
+| R5 | Kund-id som inte finns i databasen | 200 med bara rubrikraden. Ändras inte. | Samma beteende som `GET /customers/me/orders`. Följer av den förenklade inloggningen och ligger utanför storyn. Känd begränsning. |
+| R6 | Datum i Stockholmstid | `Intl.DateTimeFormat` med `timeZone: 'Europe/Stockholm'`. | Verifierat i Node 22: `2026-09-30T22:30:00Z` ger `2026-10-01`. Inget extra bibliotek behövs. |
+| R7 | Testfil | Ny fil `tests/export.test.ts`. | Funktionen hålls isär och är lätt att granska. |
+| R8 | Lösenord i fallback-URL:er (`src/db.ts:5`, `tests/helpers/env.ts:3`) | Ändras inte. Noteras som risk. | Lokala standardvärden för Docker i kursens repo, inga riktiga hemligheter. |
 
 ## API-kontrakt
 
