@@ -121,7 +121,7 @@ Det ska bland annat finnas:
 - små spårbara commits
 - ADR för det viktigaste design- eller arkitekturbeslutet
 
-Vald user story: **TBD**
+Vald user story: **#8 Export: kunden laddar ner sina beställningar som CSV, utökad med språkstöd för sv och en.**
 
 ### Arbete 2 – Granskning av agentgenererad kod
 
@@ -300,7 +300,6 @@ För VG ska mätningar användas för att motivera val och bortval, exempelvis:
 
 Följande beslut är ännu inte fattade:
 
-- vilken user story som ska användas i Arbete 1
 - acceptanskriterier för den valda user storyn
 - API-kontrakt för den nya funktionen
 - vilket beslut som ska dokumenteras i ADR

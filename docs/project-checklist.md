@@ -6,7 +6,7 @@
 | Lint | Befintligt npm-script | TBD | Baseline finns |
 | Format | Befintligt npm-script | TBD | Baseline finns |
 | Typecheck | Befintligt npm-script | TBD | Baseline finns |
-| Skill 1: /tdd | Anpassas från Tvättstugan | TBD | Inte påbörjad |
+| Skill 1: /tdd | `.claude/skills/tdd/SKILL.md`, anpassad till Jest och `npm test` | TBD | Inte påbörjad |
 | Skill 2 | TBD | TBD | Inte påbörjad |
 | Skill 3 | TBD | TBD | Inte påbörjad |
 | Subagent 1 | TBD | TBD | Inte påbörjad |
@@ -18,9 +18,9 @@
 | Hook 3 | TBD | TBD | Inte påbörjad |
 | Hook 4 | TBD | TBD | Inte påbörjad |
 | Hook 5 | TBD | TBD | Inte påbörjad |
-| Allow/Ask/Deny | Anpassas från Tvättstugan | TBD | Inte påbörjad |
+| Allow/Ask/Deny | `.claude/settings.json`, anpassad till detta repo | TBD | Inte påbörjad |
 | Sessionslogg | En fil per arbetspass | sessions/ | Inte påbörjad |
-| Ny funktion | User story ej vald | TBD | Inte påbörjad |
+| Ny funktion | #8 CSV-export, utökad med språkstöd för sv och en | TBD | Påbörjad |
 | Agentkod-review | Lärarens PR | TBD | Inte påbörjad |
 | Legacy codemap | price_calc.py + callers | TBD | Inte påbörjad |
 | 5 characterization tests | Python/pytest | TBD | Inte påbörjad |
