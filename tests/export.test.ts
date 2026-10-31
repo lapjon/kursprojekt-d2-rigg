@@ -59,4 +59,22 @@ describe("GET /customers/me/orders/export", () => {
       error: { code: "invalid_input", message: "lang måste vara sv eller en." },
     });
   });
+
+  it("returnerar 400 invalid_input för lang utan värde", async () => {
+    const res = await request(app)
+      .get("/customers/me/orders/export?lang=")
+      .set("X-Customer-Id", "7");
+    expect(res.status).toBe(400);
+    expect(res.headers["content-type"]).toMatch(/application\/json/);
+    expect(res.body.error.code).toBe("invalid_input");
+  });
+
+  it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
+    const res = await request(app)
+      .get("/customers/me/orders/export?lang=sv&lang=en")
+      .set("X-Customer-Id", "7");
+    expect(res.status).toBe(400);
+    expect(res.headers["content-type"]).toMatch(/application\/json/);
+    expect(res.body.error.code).toBe("invalid_input");
+  });
 });
