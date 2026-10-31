@@ -1,4 +1,4 @@
-import { escapeField } from "../src/csv";
+import { escapeField, neutralizeFormula } from "../src/csv";
 
 describe("escapeField", () => {
   it("omger ett fält som innehåller avgränsaren ; med citattecken", () => {
@@ -21,5 +21,11 @@ describe("escapeField", () => {
     ["; när avgränsaren är ,", "a;b", ","],
   ])("lämnar %s oförändrat", (_label, value, delimiter) => {
     expect(escapeField(value, delimiter)).toBe(value);
+  });
+});
+
+describe("neutralizeFormula", () => {
+  it("sätter ett ' först i ett fält som börjar med =", () => {
+    expect(neutralizeFormula("=1+1")).toBe("'=1+1");
   });
 });
