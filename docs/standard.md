@@ -4,6 +4,7 @@ Teamets regler för koden i det här projektet. De står här i ord. Regler som 
 
 ## Namn
 - Funktioner och variabler i TypeScript skrivs i camelCase, typer i PascalCase.
+- Variabel- och funktionsnamn skrivs på engelska. Kommentarer, testnamn och felmeddelanden skrivs på svenska.
 - Fältnamn i JSON-svar skrivs i camelCase, även när kolumnen i databasen har snake_case. Byt namn i SQL med `AS "fältnamn"`.
 
 ## Databas
