@@ -1,3 +1,4 @@
+import { escapeField } from "../csv";
 import { db } from "../db";
 import { ExportLang, ExportStrings, exportStrings } from "../i18n/exportStrings";
 import { Result, err, ok } from "../result";
@@ -42,7 +43,9 @@ export async function exportOrders(
         row.product,
         row.quantity,
         row.unitPrice?.replace(".", strings.decimalSeparator),
-      ].join(strings.delimiter) + "\r\n",
+      ]
+        .map((field) => escapeField(String(field ?? ""), strings.delimiter))
+        .join(strings.delimiter) + "\r\n",
   );
   return ok({ filename: strings.filename, csv: `${BOM}${header}\r\n${dataRows.join("")}` });
 }

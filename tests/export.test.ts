@@ -243,6 +243,26 @@ describe("GET /customers/me/orders/export", () => {
     },
   );
 
+  // Steg 9 (b), kriterium 10: fält citeras enligt RFC 4180 beroende på språkets avgränsare.
+  // Raden delas inte med split, eftersom ett citerat fält kan innehålla avgränsaren.
+  it.each([
+    ["sv", '3301;2026-11-03;Ny;"Lampa; vit";1;50,00\r\n'],
+    ["en", "3301,2026-11-03,New,Lampa; vit,1,50.00\r\n"],
+  ])("citerar produktnamnet Lampa; vit enligt RFC 4180 med lang=%s", async (lang, expectedRow) => {
+    await db.query(
+      `INSERT INTO orders (id, customer_id, status, created_at)
+       VALUES (3301, 1, 'new', '2026-11-03 12:00:00+01')`,
+    );
+    await db.query(
+      `INSERT INTO order_lines (order_id, product, quantity, unit_price)
+       VALUES (3301, 'Lampa; vit', 1, 50.00)`,
+    );
+    const res = await request(app)
+      .get(`/customers/me/orders/export?lang=${lang}`)
+      .set("X-Customer-Id", "1");
+    expect(res.text).toContain(expectedRow);
+  });
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")
