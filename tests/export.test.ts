@@ -86,6 +86,20 @@ describe("GET /customers/me/orders/export", () => {
     expect(rows.map((cells) => cells[0])).not.toContain("1041");
   });
 
+  it("sorterar beställningar nyast först och orderrader i tillagd ordning för kund 1", async () => {
+    const res = await request(app).get("/customers/me/orders/export").set("X-Customer-Id", "1");
+    const lines = res.text.replace("\u{FEFF}", "").split("\r\n").filter(Boolean);
+    const summary = lines.slice(1).map((line) => {
+      const cells = line.split(";");
+      return [cells[0], cells[3]];
+    });
+    expect(summary).toEqual([
+      ["1042", "Skrivbordslampa"],
+      ["1042", "Musmatta"],
+      ["1040", "Hörlurar"],
+    ]);
+  });
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")
