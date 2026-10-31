@@ -1,13 +1,13 @@
 # Kodstandard
 
-Teamets regler för koden i det här projektet. De står här i ord. Ingen av dem kontrolleras automatiskt ännu: att göra dem kontrollerbara i verktyg och hooks är en del av kursprojektet.
+Teamets regler för koden i det här projektet. De står här i ord. Regler som kontrolleras automatiskt är markerade med *(kontrolleras av …)*. Att göra fler av dem kontrollerbara i verktyg och hooks är en del av kursprojektet.
 
 ## Namn
 - Funktioner och variabler i TypeScript skrivs i camelCase, typer i PascalCase.
 - Fältnamn i JSON-svar skrivs i camelCase, även när kolumnen i databasen har snake_case. Byt namn i SQL med `AS "fältnamn"`.
 
 ## Databas
-- All SQL är parametriserad: `db.query(sql, [värden])`. SQL byggs aldrig med strängmallar eller sammanslagning.
+- All SQL är parametriserad: `db.query(sql, [värden])`. SQL byggs aldrig med strängmallar eller sammanslagning. *(Kontrolleras av ESLint, `no-restricted-syntax` i `eslint.config.js`, och därmed av hooken `formatera-och-lint.js` efter varje ändring.)*
 - Hämta relaterade rader i en fråga (JOIN eller `= ANY($1)`), inte en fråga per rad i en loop.
 - Skrivningar som hör ihop görs i en transaktion.
 
