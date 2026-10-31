@@ -324,6 +324,43 @@ describe("GET /customers/me/orders/export", () => {
     },
   );
 
+  // Steg 11 (varv B), kriterium 10 och 11 genom hela exporten. Varje fall har ett eget order-id.
+  // Fältet är detsamma för sv och en, eftersom inget av produktnamnen innehåller ; eller ,.
+  const specialProducts: [number, string, string, string][] = [
+    [3501, 'a"b', '"a""b"', "citattecken dubbleras och fältet citeras"],
+    [3502, "a\nb", '"a\nb"', "radbrytning citeras"],
+    [3503, "+1", "'+1", "plus får ' först"],
+    [3504, "-1", "'-1", "minus får ' först"],
+    [3505, "@x", "'@x", "snabel-a får ' först"],
+    [3506, "＝x", "'＝x", "fullbredds likhetstecken får ' först"],
+  ];
+
+  it.each(
+    specialProducts.flatMap(([id, product, field, label]) => [
+      ["sv", ";", "Ny", "50,00", id, product, field, label],
+      ["en", ",", "New", "50.00", id, product, field, label],
+    ]),
+  )(
+    "ger rätt rad för specialtecken med lang=%s (avgränsare %s, status %s, pris %s, order %s, produkt %j, fält %j): %s",
+    async (lang, delimiter, status, price, id, product, field) => {
+      await db.query(
+        `INSERT INTO orders (id, customer_id, status, created_at)
+         VALUES ($1, 1, 'new', '2026-11-05 12:00:00+01')`,
+        [id],
+      );
+      await db.query(
+        `INSERT INTO order_lines (order_id, product, quantity, unit_price)
+         VALUES ($1, $2, 1, 50.00)`,
+        [id, product],
+      );
+      const res = await request(app)
+        .get(`/customers/me/orders/export?lang=${lang}`)
+        .set("X-Customer-Id", "1");
+      const expectedRow = [id, "2026-11-05", status, field, "1", price].join(delimiter as string);
+      expect(res.text).toContain(`${expectedRow}\r\n`);
+    },
+  );
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")
