@@ -131,6 +131,25 @@ describe("GET /customers/me/orders/export", () => {
     expect([cells[3], cells[4], cells[5]]).toEqual(["", "", ""]);
   });
 
+  it.each([
+    ["sv", ";", "Betald"],
+    ["en", ",", "Paid"],
+  ])(
+    "visar status paid för beställning 1042 översatt med lang=%s",
+    async (lang, delimiter, label) => {
+      const res = await request(app)
+        .get(`/customers/me/orders/export?lang=${lang}`)
+        .set("X-Customer-Id", "1");
+      const lines = res.text.replace("\u{FEFF}", "").split("\r\n").filter(Boolean);
+      const statuses = lines
+        .slice(1)
+        .map((line) => line.split(delimiter))
+        .filter((cells) => cells[0] === "1042")
+        .map((cells) => cells[2]);
+      expect(statuses).toEqual([label, label]);
+    },
+  );
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")

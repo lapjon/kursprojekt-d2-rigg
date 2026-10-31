@@ -9,6 +9,9 @@ export type ExportStrings = {
     quantity: string;
     unitPrice: string;
   };
+  statuses: {
+    paid: string;
+  };
   delimiter: string;
   filename: string;
 };
@@ -29,6 +32,10 @@ export const exportStrings: Record<ExportLang, ExportStrings> = {
       // Kolumnrubrik i CSV-filen, första raden: pris per enhet ("à-pris").
       unitPrice: "À-pris",
     },
+    statuses: {
+      // Statusvärde i kolumnen Status för beställningar med status `paid`.
+      paid: "Betald",
+    },
     // Tecken som skiljer fälten åt på varje rad i CSV-filen (semikolon i svensk Excel).
     delimiter: ";",
     // Filnamn i Content-Disposition när användaren sparar exporten.
@@ -48,6 +55,10 @@ export const exportStrings: Record<ExportLang, ExportStrings> = {
       quantity: "Quantity",
       // Kolumnrubrik i CSV-filen, första raden: pris per enhet.
       unitPrice: "Unit price",
+    },
+    statuses: {
+      // Statusvärde i kolumnen Status för beställningar med status `paid`.
+      paid: "Paid",
     },
     // Tecken som skiljer fälten åt på varje rad i CSV-filen (komma i engelsk Excel).
     delimiter: ",",

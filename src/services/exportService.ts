@@ -29,9 +29,14 @@ export async function exportOrders(
   );
   const dataRows = res.rows.map(
     (row) =>
-      [row.id, row.createdAt, row.status, row.product, row.quantity, row.unitPrice].join(
-        strings.delimiter,
-      ) + "\r\n",
+      [
+        row.id,
+        row.createdAt,
+        row.status === "paid" ? strings.statuses.paid : row.status,
+        row.product,
+        row.quantity,
+        row.unitPrice,
+      ].join(strings.delimiter) + "\r\n",
   );
   return ok({ filename: strings.filename, csv: `${BOM}${header}\r\n${dataRows.join("")}` });
 }
