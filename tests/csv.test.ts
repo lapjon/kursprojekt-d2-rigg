@@ -28,4 +28,19 @@ describe("neutralizeFormula", () => {
   it("sätter ett ' först i ett fält som börjar med =", () => {
     expect(neutralizeFormula("=1+1")).toBe("'=1+1");
   });
+
+  it.each([
+    ["+", "+1"],
+    ["-", "-1"],
+    ["@", "@SUM(1)"],
+    ["tabb", "\tx"],
+    ["vagnretur", "\rx"],
+    ["radmatning", "\nx"],
+    ["fullbredds ＝", "＝1+1"],
+    ["fullbredds ＋", "＋1"],
+    ["fullbredds －", "－1"],
+    ["fullbredds ＠", "＠SUM(1)"],
+  ])("sätter ett ' först i ett fält som börjar med %s", (_label, value) => {
+    expect(neutralizeFormula(value)).toBe(`'${value}`);
+  });
 });

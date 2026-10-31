@@ -8,7 +8,7 @@ Endpoint: `GET /customers/me/orders/export?lang=sv|en`.
 | Del | Fil | Innehåll |
 |---|---|---|
 | Strängtabeller | `src/i18n/exportStrings.ts` (ny) | Per språk: rubriker, statusvärden, avgränsare, decimaltecken, filnamn. Typen `ExportLang = "sv" \| "en"`. |
-| CSV-hjälpare | `src/csv.ts` (ny) | `escapeField` (RFC 4180 + neutralisering av `=`, `+`, `-`, `@`), `toCsvRow`. Rena funktioner. |
+| CSV-hjälpare | `src/csv.ts` (ny) | `escapeField` (RFC 4180) och `neutralizeFormula` (B6). Rena funktioner. |
 | Tjänst | `src/services/exportService.ts` (ny) | `exportOrders(customerId, lang: unknown): Promise<Result<{ filename; csv }>>`. Validerar `lang` (R1, R3), en SQL med JOIN, bygger CSV. |
 | Route | `src/routes/customers.ts` | Ny `customers.get("/customers/me/orders/export", requireCustomer, ...)`. Kund-id från `req.customerId`. Headers sätts direkt i routen (R2), fel via `sendResult`/`sendError`. |
 | Test | `tests/export.test.ts` (ny, R7) | Supertest mot `createApp()`, `resetDb` före varje test. Rena enhetstester för `csv.ts` i samma fil. |
@@ -82,7 +82,7 @@ Kontextkommentarer: varje nyckel i `src/i18n/exportStrings.ts` ska ha en komment
 
 ### Steg 10 – Neutralisering av CSV-injektion
 - Testar: **11** (B6).
-- Test: produktnamn som börjar med `=`, `+`, `-` eller `@` får `'` först. Kombinerat fall: `=a;b` blir citerat och neutraliserat. Orderrad skapas via SQL eller `POST /orders`.
+- Test: produktnamn som börjar med ett tecken i B6 (`=`, `+`, `-`, `@`, tabb, vagnretur, radmatning eller fullbreddsvarianterna) får `'` först. Kombinerat fall: `=a;b` blir citerat och neutraliserat. Orderrad skapas via SQL eller `POST /orders`.
 - Filer: `tests/export.test.ts`, `src/csv.ts`.
 
 ### Steg 11 – Avslut och kvalitet
