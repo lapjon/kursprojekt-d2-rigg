@@ -41,6 +41,15 @@ describe("GET /customers/me/orders/export", () => {
       .set("X-Customer-Id", "7");
     expect(res.headers["content-disposition"]).toBe('attachment; filename="bestallningar.csv"');
     expect(res.text.split("\r\n")[0]).toContain(";");
+
+    const upper = await request(app)
+      .get("/customers/me/orders/export?lang=SV")
+      .set("X-Customer-Id", "1");
+    const lower = await request(app)
+      .get("/customers/me/orders/export?lang=sv")
+      .set("X-Customer-Id", "1");
+    expect(upper.status).toBe(200);
+    expect(upper.text).toBe(lower.text);
   });
 
   it("tolkar lang=EN som engelska", async () => {
@@ -48,6 +57,15 @@ describe("GET /customers/me/orders/export", () => {
       .get("/customers/me/orders/export?lang=EN")
       .set("X-Customer-Id", "7");
     expect(res.headers["content-disposition"]).toBe('attachment; filename="orders.csv"');
+
+    const upper = await request(app)
+      .get("/customers/me/orders/export?lang=EN")
+      .set("X-Customer-Id", "1");
+    const lower = await request(app)
+      .get("/customers/me/orders/export?lang=en")
+      .set("X-Customer-Id", "1");
+    expect(upper.status).toBe(200);
+    expect(upper.text).toBe(lower.text);
   });
 
   it("returnerar 400 invalid_input för lang=de", async () => {
@@ -219,6 +237,26 @@ describe("GET /customers/me/orders/export", () => {
     },
   );
 
+  // Steg 11, kriterium 6: seed-beställning 1042 har datumet 2026-10-01 (svensk tid).
+  it.each([
+    ["sv", ";"],
+    ["en", ","],
+  ])(
+    "visar beställning 1042 med datumet 2026-10-01 med lang=%s (avgränsare %s)",
+    async (lang, delimiter) => {
+      const res = await request(app)
+        .get(`/customers/me/orders/export?lang=${lang}`)
+        .set("X-Customer-Id", "1");
+      const lines = res.text.replace("\u{FEFF}", "").split("\r\n").filter(Boolean);
+      const dates = lines
+        .slice(1)
+        .map((line) => line.split(delimiter))
+        .filter((row) => row[0] === "1042")
+        .map((row) => row[1]);
+      expect(dates).toEqual(["2026-10-01", "2026-10-01"]);
+    },
+  );
+
   // Karakteriseringstest (steg 8, kriterium 9): förväntas vara grönt direkt, eftersom
   // exporten inte transformerar produktnamn.
   it.each([
@@ -293,5 +331,23 @@ describe("GET /customers/me/orders/export", () => {
     expect(res.status).toBe(400);
     expect(res.headers["content-type"]).toMatch(/application\/json/);
     expect(res.body.error.code).toBe("invalid_input");
+  });
+
+  // Steg 11, R3: lang som objekt (?lang[a]=b) är inte en sträng och ger 400.
+  it("returnerar 400 invalid_input när lang är ett objekt", async () => {
+    const res = await request(app)
+      .get("/customers/me/orders/export?lang[a]=b")
+      .set("X-Customer-Id", "7");
+    expect(res.status).toBe(400);
+    expect(res.headers["content-type"]).toMatch(/application\/json/);
+    expect(res.body.error.code).toBe("invalid_input");
+  });
+
+  // Steg 11, R5: en kund som inte finns har inga beställningar och får bara rubrikraden.
+  it("returnerar 200 med bara rubrikraden för ett kund-id som inte finns", async () => {
+    const res = await request(app).get("/customers/me/orders/export").set("X-Customer-Id", "9999");
+    expect(res.status).toBe(200);
+    expect(res.text.codePointAt(0)).toBe(0xfeff);
+    expect(res.text.slice(1)).toBe("Beställning;Datum;Status;Produkt;Antal;À-pris\r\n");
   });
 });
