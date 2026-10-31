@@ -219,6 +219,30 @@ describe("GET /customers/me/orders/export", () => {
     },
   );
 
+  // Karakteriseringstest (steg 8, kriterium 9): förväntas vara grönt direkt, eftersom
+  // exporten inte transformerar produktnamn.
+  it.each([
+    ["sv", ";"],
+    ["en", ","],
+  ])(
+    "lämnar produktnamnen Hörlurar och Skrivbordslampa oförändrade efter BOM med lang=%s (avgränsare %s)",
+    async (lang, delimiter) => {
+      const res = await request(app)
+        .get(`/customers/me/orders/export?lang=${lang}`)
+        .set("X-Customer-Id", "1");
+      expect(res.text.codePointAt(0)).toBe(0xfeff);
+      const body = res.text.slice(1);
+      expect(body.codePointAt(0)).not.toBe(0xfeff);
+      const products = body
+        .split("\r\n")
+        .filter(Boolean)
+        .slice(1)
+        .map((line) => line.split(delimiter)[3]);
+      expect(products).toContain("Hörlurar");
+      expect(products).toContain("Skrivbordslampa");
+    },
+  );
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")
