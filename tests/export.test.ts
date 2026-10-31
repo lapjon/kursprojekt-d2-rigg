@@ -179,6 +179,24 @@ describe("GET /customers/me/orders/export", () => {
     },
   );
 
+  it.each([
+    ["sv", ";", "375,00"],
+    ["en", ",", "375.00"],
+  ])(
+    "visar à-pris 375.00 för Skrivbordslampa i beställning 1042 som %s (avgränsare %s): %s, utan tusentalsavgränsare",
+    async (lang, delimiter, label) => {
+      const res = await request(app)
+        .get(`/customers/me/orders/export?lang=${lang}`)
+        .set("X-Customer-Id", "1");
+      const lines = res.text.replace("\u{FEFF}", "").split("\r\n").filter(Boolean);
+      const cells = lines
+        .slice(1)
+        .map((line) => line.split(delimiter))
+        .find((row) => row[0] === "1042" && row[3] === "Skrivbordslampa");
+      expect(cells?.[5]).toBe(label);
+    },
+  );
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")

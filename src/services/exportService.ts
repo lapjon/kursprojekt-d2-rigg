@@ -37,7 +37,7 @@ export async function exportOrders(
           : row.status,
         row.product,
         row.quantity,
-        row.unitPrice,
+        row.unitPrice?.replace(".", strings.decimalSeparator),
       ].join(strings.delimiter) + "\r\n",
   );
   return ok({ filename: strings.filename, csv: `${BOM}${header}\r\n${dataRows.join("")}` });

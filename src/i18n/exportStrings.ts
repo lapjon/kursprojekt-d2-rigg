@@ -16,6 +16,7 @@ export type ExportStrings = {
     cancelled: string;
   };
   delimiter: string;
+  decimalSeparator: string;
   filename: string;
 };
 
@@ -47,6 +48,8 @@ export const exportStrings: Record<ExportLang, ExportStrings> = {
     },
     // Tecken som skiljer fälten åt på varje rad i CSV-filen (semikolon i svensk Excel).
     delimiter: ";",
+    // Decimaltecken i kolumnen À-pris, t.ex. 375,00 (komma i svensk Excel, ingen tusentalsavgränsare).
+    decimalSeparator: ",",
     // Filnamn i Content-Disposition när användaren sparar exporten.
     filename: "bestallningar.csv",
   },
@@ -77,6 +80,8 @@ export const exportStrings: Record<ExportLang, ExportStrings> = {
     },
     // Tecken som skiljer fälten åt på varje rad i CSV-filen (komma i engelsk Excel).
     delimiter: ",",
+    // Decimaltecken i kolumnen Unit price, t.ex. 375.00 (punkt i engelsk Excel, ingen tusentalsavgränsare).
+    decimalSeparator: ".",
     // Filnamn i Content-Disposition när användaren sparar exporten.
     filename: "orders.csv",
   },
