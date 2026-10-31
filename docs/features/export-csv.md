@@ -44,6 +44,7 @@ Beslutade av Jon Laprevote 2026-10-30. K1–K3 gäller API-kontraktet.
   - Maskinöversättning vid exporten: osäker för fritext, kan ge olika resultat vid två exporter, kostar ett anrop per rad och granskas inte av någon människa.
   - Produktkatalog med översättningar: kräver nya tabeller, migreringar och ändrad `POST /orders`. Det är en egen user story.
   - Exporten ska stämma med det kunden faktiskt beställde. Man lokaliserar det systemet äger, inte innehåll som användaren skapat.
+- **Filnamn med ä enligt RFC 6266.** `filename*=UTF-8''best%C3%A4llningar.csv` med ASCII-namnet som reserv ger `beställningar.csv` i moderna webbläsare. Det kräver ändrade krav och fyra ändrade assertioner i steg 11. Kandidat till Arbete 3 eller en egen story.
 
 ## Acceptanskriterier
 
@@ -94,6 +95,7 @@ Underlag: `docs/research.md` (subagenten `kodutforskare`). Beslutade av Jon Lapr
 | R9 | Radslut i CSV-filen | Varje rad, även den sista, avslutas med CRLF (`\r\n`) enligt RFC 4180. | Det är standarden, Excel läser det, och testerna kan kontrollera bodyn exakt. Beslutat under planfasen. |
 | R10 | Okänd status (ett värde utan översättning, till exempel `refunded`) | Visas oförändrad i kolumnen Status. | Ingen data försvinner, och exporten kraschar inte om en ny status läggs till i databasen före översättningen. Låses av testet i steg 5 (b). Beslutat av Jon 31 okt. |
 | R11 | Svensk översättning av `cancelled` | `Avbruten`. | Passar oavsett om kunden eller butiken avbryter. `Avbeställd` antyder att kunden gjorde det. Flaggat som osäkert av `oversattningsgranskare` i steg 11. Beslutat av Jon 31 okt. |
+| R12 | Filnamn med å, ä eller ö | `bestallningar.csv`, utan ä. | `filename="..."` i Content-Disposition är bara säkert för ASCII. Ett ä kan bli trasigt i äldre program. Upptäckt vid den manuella kontrollen i steg 11. Beslutat av Jon 31 okt. |
 
 ## API-kontrakt
 
