@@ -118,6 +118,19 @@ describe("GET /customers/me/orders/export", () => {
     expect(orderIds.slice(0, 2)).toEqual(["3002", "3001"]);
   });
 
+  it("ger en datarad med tomma produktfält för beställning utan rader och avslutar varje rad med CRLF", async () => {
+    const res = await request(app).get("/customers/me/orders/export").set("X-Customer-Id", "3");
+    const body = res.text.replace("\u{FEFF}", "");
+    expect(body.endsWith("\r\n")).toBe(true);
+    expect(body.replace(/\r\n/g, "")).not.toMatch(/[\r\n]/);
+    const lines = body.split("\r\n").filter(Boolean);
+    expect(lines).toHaveLength(2);
+    const cells = lines[1].split(";");
+    expect(cells).toHaveLength(6);
+    expect(cells[0]).toBe("1043");
+    expect([cells[3], cells[4], cells[5]]).toEqual(["", "", ""]);
+  });
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")

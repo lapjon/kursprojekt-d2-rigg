@@ -22,7 +22,7 @@ export async function exportOrders(
     `SELECT o.id, o.created_at AS "createdAt", o.status, l.product, l.quantity,
             l.unit_price AS "unitPrice"
        FROM orders o
-       JOIN order_lines l ON l.order_id = o.id
+       LEFT JOIN order_lines l ON l.order_id = o.id
       WHERE o.customer_id = $1
       ORDER BY o.created_at DESC, o.id DESC, l.id`,
     [customerId],
