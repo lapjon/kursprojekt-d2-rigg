@@ -26,7 +26,7 @@ customers.get("/customers/me/orders", requireCustomer, async (req, res) => {
 
 // Den inloggade kundens beställningar som CSV-fil.
 customers.get("/customers/me/orders/export", requireCustomer, async (req, res) => {
-  const result = await exportOrders(req.query.lang);
+  const result = await exportOrders((req as AuthedRequest).customerId, req.query.lang);
   if (!result.ok) {
     sendError(res, result.error);
     return;

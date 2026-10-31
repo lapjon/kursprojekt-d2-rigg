@@ -69,6 +69,23 @@ describe("GET /customers/me/orders/export", () => {
     expect(res.body.error.code).toBe("invalid_input");
   });
 
+  it("returnerar rubrikrad och en datarad per orderrad för kund 1, utan kund 2:s beställning", async () => {
+    const res = await request(app).get("/customers/me/orders/export").set("X-Customer-Id", "1");
+    const lines = res.text.replace("\u{FEFF}", "").split("\r\n").filter(Boolean);
+    expect(lines).toHaveLength(4);
+    expect(lines[0]).toBe("Beställning;Datum;Status;Produkt;Antal;À-pris");
+    const rows = lines.slice(1).map((line) => line.split(";"));
+    const summary = rows.map((cells) => [cells[0], cells[3], cells[4]]);
+    expect(summary).toEqual(
+      expect.arrayContaining([
+        ["1040", "Hörlurar", "1"],
+        ["1042", "Skrivbordslampa", "2"],
+        ["1042", "Musmatta", "1"],
+      ]),
+    );
+    expect(rows.map((cells) => cells[0])).not.toContain("1041");
+  });
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")
