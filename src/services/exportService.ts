@@ -24,7 +24,7 @@ export async function exportOrders(
        FROM orders o
        JOIN order_lines l ON l.order_id = o.id
       WHERE o.customer_id = $1
-      ORDER BY o.created_at DESC, l.id`,
+      ORDER BY o.created_at DESC, o.id DESC, l.id`,
     [customerId],
   );
   const dataRows = res.rows.map(

@@ -1,5 +1,6 @@
 import request from "supertest";
 import { createApp } from "../src/app";
+import { db } from "../src/db";
 import { closeDb, resetDb } from "./helpers/db";
 
 const app = createApp();
@@ -98,6 +99,23 @@ describe("GET /customers/me/orders/export", () => {
       ["1042", "Musmatta"],
       ["1040", "Hörlurar"],
     ]);
+  });
+
+  it("sorterar beställningar med samma created_at på id, högst först", async () => {
+    await db.query(
+      `INSERT INTO orders (id, customer_id, status, created_at) VALUES
+         (3001, 1, 'new', '2026-11-01 12:00:00+01'),
+         (3002, 1, 'new', '2026-11-01 12:00:00+01')`,
+    );
+    await db.query(
+      `INSERT INTO order_lines (order_id, product, quantity, unit_price) VALUES
+         (3001, 'Pennhållare', 1, 50.00),
+         (3002, 'Skrivunderlägg', 1, 80.00)`,
+    );
+    const res = await request(app).get("/customers/me/orders/export").set("X-Customer-Id", "1");
+    const lines = res.text.replace("\u{FEFF}", "").split("\r\n").filter(Boolean);
+    const orderIds = lines.slice(1).map((line) => line.split(";")[0]);
+    expect(orderIds.slice(0, 2)).toEqual(["3002", "3001"]);
   });
 
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
