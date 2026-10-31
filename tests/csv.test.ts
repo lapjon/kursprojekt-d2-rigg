@@ -43,4 +43,13 @@ describe("neutralizeFormula", () => {
   ])("sätter ett ' först i ett fält som börjar med %s", (_label, value) => {
     expect(neutralizeFormula(value)).toBe(`'${value}`);
   });
+
+  it.each([
+    ["abc", "abc"],
+    ["a=b", "a=b"],
+    ["1-2", "1-2"],
+    ["'x", "'x"],
+  ])("lämnar %s oförändrat när formeltecknet inte står först", (_label, value) => {
+    expect(neutralizeFormula(value)).toBe(value);
+  });
 });
