@@ -263,6 +263,29 @@ describe("GET /customers/me/orders/export", () => {
     expect(res.text).toContain(expectedRow);
   });
 
+  // Steg 10 (b), kriterium 11 (B6): formler neutraliseras innan fältet citeras.
+  // Kombinerat fall: =a;b får ' först och citeras sedan om avgränsaren är ;.
+  it.each([
+    ["sv", '3401;2026-11-04;Ny;"\'=a;b";1;50,00\r\n'],
+    ["en", "3401,2026-11-04,New,'=a;b,1,50.00\r\n"],
+  ])(
+    "neutraliserar produktnamnet =a;b och citerar vid behov med lang=%s",
+    async (lang, expectedRow) => {
+      await db.query(
+        `INSERT INTO orders (id, customer_id, status, created_at)
+       VALUES (3401, 1, 'new', '2026-11-04 12:00:00+01')`,
+      );
+      await db.query(
+        `INSERT INTO order_lines (order_id, product, quantity, unit_price)
+       VALUES (3401, '=a;b', 1, 50.00)`,
+      );
+      const res = await request(app)
+        .get(`/customers/me/orders/export?lang=${lang}`)
+        .set("X-Customer-Id", "1");
+      expect(res.text).toContain(expectedRow);
+    },
+  );
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")
