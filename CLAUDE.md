@@ -37,7 +37,7 @@ Gör inga orelaterade ändringar.
 
 Ändra filer med Edit- eller Write-verktyget, inte med sed eller skript i Bash, så att ändringen syns och kan godkännas.
 
-Skriv osynliga tecken som escapesekvenser, till exempel BOM som `\uFEFF`.
+Skriv osynliga tecken som escapesekvenser, till exempel BOM som `\uFEFF`. Synliga tecken som å, ä och ö skrivs som vanligt.
 
 ## Kodstandard
 
