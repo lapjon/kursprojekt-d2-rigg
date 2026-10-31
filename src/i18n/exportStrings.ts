@@ -10,7 +10,10 @@ export type ExportStrings = {
     unitPrice: string;
   };
   statuses: {
+    new: string;
     paid: string;
+    shipped: string;
+    cancelled: string;
   };
   delimiter: string;
   filename: string;
@@ -33,8 +36,14 @@ export const exportStrings: Record<ExportLang, ExportStrings> = {
       unitPrice: "À-pris",
     },
     statuses: {
+      // Statusvärde i kolumnen Status för beställningar med status `new`.
+      new: "Ny",
       // Statusvärde i kolumnen Status för beställningar med status `paid`.
       paid: "Betald",
+      // Statusvärde i kolumnen Status för beställningar med status `shipped`.
+      shipped: "Skickad",
+      // Statusvärde i kolumnen Status för beställningar med status `cancelled`.
+      cancelled: "Avbruten",
     },
     // Tecken som skiljer fälten åt på varje rad i CSV-filen (semikolon i svensk Excel).
     delimiter: ";",
@@ -57,8 +66,14 @@ export const exportStrings: Record<ExportLang, ExportStrings> = {
       unitPrice: "Unit price",
     },
     statuses: {
+      // Statusvärde i kolumnen Status för beställningar med status `new`.
+      new: "New",
       // Statusvärde i kolumnen Status för beställningar med status `paid`.
       paid: "Paid",
+      // Statusvärde i kolumnen Status för beställningar med status `shipped`.
+      shipped: "Shipped",
+      // Statusvärde i kolumnen Status för beställningar med status `cancelled`.
+      cancelled: "Cancelled",
     },
     // Tecken som skiljer fälten åt på varje rad i CSV-filen (komma i engelsk Excel).
     delimiter: ",",

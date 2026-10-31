@@ -150,6 +150,35 @@ describe("GET /customers/me/orders/export", () => {
     },
   );
 
+  it.each([
+    ["sv", ";", "new", "Ny"],
+    ["sv", ";", "shipped", "Skickad"],
+    ["sv", ";", "cancelled", "Avbruten"],
+    ["sv", ";", "refunded", "refunded"],
+    ["en", ",", "new", "New"],
+    ["en", ",", "shipped", "Shipped"],
+    ["en", ",", "cancelled", "Cancelled"],
+    ["en", ",", "refunded", "refunded"],
+  ])(
+    "översätter status med lang=%s (avgränsare %s): %s visas som %s, okänd status oförändrad",
+    async (lang, delimiter, status, label) => {
+      await db.query(
+        `INSERT INTO orders (id, customer_id, status, created_at)
+         VALUES (3101, 1, $1, '2026-11-02 12:00:00+01')`,
+        [status],
+      );
+      const res = await request(app)
+        .get(`/customers/me/orders/export?lang=${lang}`)
+        .set("X-Customer-Id", "1");
+      const lines = res.text.replace("\u{FEFF}", "").split("\r\n").filter(Boolean);
+      const cells = lines
+        .slice(1)
+        .map((line) => line.split(delimiter))
+        .find((row) => row[0] === "3101");
+      expect(cells?.[2]).toBe(label);
+    },
+  );
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")

@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { ExportLang, exportStrings } from "../i18n/exportStrings";
+import { ExportLang, ExportStrings, exportStrings } from "../i18n/exportStrings";
 import { Result, err, ok } from "../result";
 
 const BOM = "\uFEFF";
@@ -32,7 +32,9 @@ export async function exportOrders(
       [
         row.id,
         row.createdAt,
-        row.status === "paid" ? strings.statuses.paid : row.status,
+        Object.hasOwn(strings.statuses, row.status)
+          ? strings.statuses[row.status as keyof ExportStrings["statuses"]]
+          : row.status,
         row.product,
         row.quantity,
         row.unitPrice,

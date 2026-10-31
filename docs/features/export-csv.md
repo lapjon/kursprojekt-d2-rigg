@@ -92,6 +92,7 @@ Underlag: `docs/research.md` (subagenten `kodutforskare`). Beslutade av Jon Lapr
 | R7 | Testfil | Ny fil `tests/export.test.ts`. | Funktionen hålls isär och är lätt att granska. |
 | R8 | Lösenord i fallback-URL:er (`src/db.ts:5`, `tests/helpers/env.ts:3`) | Ändras inte. Noteras som risk. | Lokala standardvärden för Docker i kursens repo, inga riktiga hemligheter. |
 | R9 | Radslut i CSV-filen | Varje rad, även den sista, avslutas med CRLF (`\r\n`) enligt RFC 4180. | Det är standarden, Excel läser det, och testerna kan kontrollera bodyn exakt. Beslutat under planfasen. |
+| R10 | Okänd status (ett värde utan översättning, till exempel `refunded`) | Visas oförändrad i kolumnen Status. | Ingen data försvinner, och exporten kraschar inte om en ny status läggs till i databasen före översättningen. Låses av testet i steg 5 (b). Beslutat av Jon 31 okt. |
 
 ## API-kontrakt
 
