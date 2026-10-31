@@ -197,6 +197,28 @@ describe("GET /customers/me/orders/export", () => {
     },
   );
 
+  it.each([
+    ["sv", ";"],
+    ["en", ","],
+  ])(
+    "visar created_at 2026-09-30 22:30 UTC som 2026-10-01 (Europe/Stockholm) med lang=%s (avgränsare %s)",
+    async (lang, delimiter) => {
+      await db.query(
+        `INSERT INTO orders (id, customer_id, status, created_at)
+         VALUES (3201, 1, 'new', '2026-09-30 22:30:00+00')`,
+      );
+      const res = await request(app)
+        .get(`/customers/me/orders/export?lang=${lang}`)
+        .set("X-Customer-Id", "1");
+      const lines = res.text.replace("\u{FEFF}", "").split("\r\n").filter(Boolean);
+      const cells = lines
+        .slice(1)
+        .map((line) => line.split(delimiter))
+        .find((row) => row[0] === "3201");
+      expect(cells?.[1]).toBe("2026-10-01");
+    },
+  );
+
   it("returnerar 400 invalid_input när lang förekommer flera gånger", async () => {
     const res = await request(app)
       .get("/customers/me/orders/export?lang=sv&lang=en")

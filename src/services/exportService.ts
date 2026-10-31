@@ -4,6 +4,10 @@ import { Result, err, ok } from "../result";
 
 const BOM = "\uFEFF";
 
+// sv-SE ger ÅÅÅÅ-MM-DD i båda exportspråken. Tidszonen anges uttryckligen så att
+// resultatet inte beror på serverns tidszon.
+const dateFormat = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Stockholm" });
+
 export type OrderExport = { filename: string; csv: string };
 
 export async function exportOrders(
@@ -31,7 +35,7 @@ export async function exportOrders(
     (row) =>
       [
         row.id,
-        row.createdAt,
+        dateFormat.format(row.createdAt),
         Object.hasOwn(strings.statuses, row.status)
           ? strings.statuses[row.status as keyof ExportStrings["statuses"]]
           : row.status,
