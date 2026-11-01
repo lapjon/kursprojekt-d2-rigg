@@ -10,12 +10,12 @@ Underlag från Jon: $ARGUMENTS
 ## 1. Hitta förra passet
 - Hitta den högsta `sessions/pass-N.md`. Den nya filen blir `pass-(N+1).md`.
 - Läs förra loggen. Följ dess rubriker och ton, och se vad som stod under "Återstår".
-- Hitta commiten som lade till förra loggen: `git log -1 --format=%h -- sessions/pass-N.md`.
+- Hitta commiten som lade till förra loggen: `git log -1 --format=%h -- sessions/pass-N.md`. Ger kommandot inget svar, till exempel för att förra loggen inte är committad, stanna och fråga Jon.
 
 ## 2. Samla fakta
 - `git log --format="%h %ad %s" --date=format:%H:%M <commit>..HEAD`: allt som gjorts sedan förra loggen.
 - `git status --short`: om något är ocommittat, nämn det under "Läge".
-- `npm test`: antalet gröna tester och sviter.
+- `npm test`: antalet gröna tester och sviter. Är något test rött, redovisa det under "Misslyckades".
 - Samtalet i den här sessionen: beslut, fel som kontrollerna fångade och sådant som misslyckades.
 
 ## 3. Skriv utkastet
@@ -24,6 +24,7 @@ Använd samma rubriker som förra loggen: Läge, Gjort, Fungerade (med bevis), V
 - Siffror under "Förbrukning" kommer bara från /usage-utdraget i underlaget. Saknas det, skriv `[klistra in /usage]` och hitta inte på siffror.
 - Det du inte vet skriver du som `[fyll i: …]`. Gissa inte på tider, orsaker eller beslut.
 - Kör inte /usage själv. Det kan bara Jon göra.
+- Ta inte med namn, e-postadresser, tokens, lösenord eller riktiga kunddata (CLAUDE.md). Skriv `[utelämnat]`.
 
 ## 4. Rapportera och stanna
 - Skriv filen med Write-verktyget.
