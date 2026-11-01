@@ -7,8 +7,8 @@
 | Format | Befintligt npm-script | sessions/pass-2.md (baslinje 3f92977) | Baslinje grön |
 | Typecheck | Befintligt npm-script | sessions/pass-2.md (baslinje 3f92977) | Baslinje grön |
 | Skill 1: /tdd | `.claude/skills/tdd/SKILL.md`, anpassad till Jest och `npm test` | `.claude/skills/tdd/SKILL.md`, använd i steg 1–11 (`bf03830`–`5fda2b8`) | Verifierad |
-| Skill 2 | TBD | TBD | Inte påbörjad |
-| Skill 3 | TBD | TBD | Inte påbörjad |
+| Skill 2 | `/sessionslogg`: utkast till sessionslogg från git och /usage | `.claude/skills/sessionslogg/SKILL.md` (`043d946`, `cf189ab`). Skrev sessions/pass-9.md. | Verifierad |
+| Skill 3 | `/granska`: kör granskarna och kontrollerar bristerna | `.claude/skills/granska/SKILL.md` (`13768f5`). Granskade `203b6fb..HEAD`, sessions/pass-9.md. | Verifierad |
 | Subagent 1 | `kodutforskare` (Haiku) | `.claude/agents/kodutforskare.md`, research `d846f79`, Haiku enligt `/usage` | Verifierad |
 | Subagent 2 | `granskare` (Sonnet) | `.claude/agents/granskare.md`. Granskningen i steg 11 hittade 8 brister, åtgärdade i `5052ad4`, `31ceaae` och `5fda2b8` (sessions/pass-8.md). | Verifierad |
 | Subagent 3 | `oversattningsgranskare` (Sonnet) | `.claude/agents/oversattningsgranskare.md`. Flaggade "Avbruten" i steg 11, vilket ledde till R11 (sessions/pass-8.md). | Verifierad |
@@ -17,10 +17,10 @@
 | Hook 2 | `skydda-tester.js` (PreToolUse) | `ee30e58`, sessions/pass-6.md | Verifierad |
 | Hook 3 | `stoppa-shell-redigering.js` (PreToolUse) | `ee30e58`, sessions/pass-6.md | Verifierad |
 | Hook 4 | `spara-lage.js` (Stop, minneskedjan) | `aa4d7cb`, sessions/pass-6.md | Verifierad |
-| Hook 5 | `ladda-lage.js` (SessionStart, minneskedjan) | `aa4d7cb`, sessions/pass-6.md | Verifierad |
+| Hook 5 | `ladda-lage.js` (SessionStart, minneskedjan) | `aa4d7cb`, sessions/pass-6.md. Läser git direkt sedan `1f66af5` och `975b034`, sessions/pass-9.md. | Verifierad |
 | Hook 6 | `formatera-och-lint.js` (PostToolUse) | `aa4d7cb`, sessions/pass-6.md | Verifierad |
 | Allow/Ask/Deny | `.claude/settings.json`, anpassad till detta repo | `.claude/settings.json`, sessions/pass-3.md | Verifierad |
-| Sessionslogg | En fil per arbetspass | `sessions/pass-1.md` till `pass-8.md` | Pågår |
+| Sessionslogg | En fil per arbetspass | `sessions/pass-1.md` till `pass-9.md` | Pågår |
 | Ny funktion | #8 CSV-export, utökad med språkstöd för sv och en | docs/features/export-csv.md. 89 gröna tester, curl-kontroll och import i Google Sheets (`docs/bilder/export-sv-google-sheets.png`), sessions/pass-8.md. | Klar |
 | Agentkod-review | Lärarens PR | TBD | Inte påbörjad |
 | Legacy codemap | price_calc.py + callers | TBD | Inte påbörjad |
