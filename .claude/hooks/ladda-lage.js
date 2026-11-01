@@ -12,6 +12,7 @@ const ROOT = process.env.CLAUDE_PROJECT_DIR || process.cwd();
 const DIR = path.join(ROOT, "sessions");
 const MAX_LOG = 6000;
 const MAX_STATE = 3000;
+const MAX_STATUS_LINES = 40;
 
 function read(file, max) {
   try {
@@ -35,6 +36,11 @@ function git(args) {
   }
 }
 
+function limitLines(text, max) {
+  const lines = text.split("\n");
+  return lines.length > max ? `${lines.slice(0, max).join("\n")}\n… och ${lines.length - max} till` : text;
+}
+
 let latest = null;
 try {
   latest = fs
@@ -50,19 +56,20 @@ const log = latest ? read(path.join(DIR, latest.name), MAX_LOG) : "";
 const state = read(path.join(DIR, "senaste-lage.md"), MAX_STATE);
 const status = git(["status", "--short"]);
 const recent = git(["log", "--oneline", "-5"]);
+// git status fungerar även i ett repo utan commits. Då misslyckas bara git log.
 const gitState =
-  status === null || recent === null
-    ? ""
+  status === null
+    ? "Git-läget kunde inte läsas. Kontrollera med `git status` innan du utgår från senaste-lage.md."
     : [
         "Det här stämmer just nu. Git-läget i senaste-lage.md sparades tidigare och kan vara inaktuellt, så lita på det här.",
-        `Ocommittade ändringar: ${status === "" ? "inga, arbetskatalogen är ren." : `\n${status}`}`,
-        `Senaste commits:\n${recent}`,
+        `Ocommittade ändringar: ${status === "" ? "inga, arbetskatalogen är ren." : `\n${limitLines(status, MAX_STATUS_LINES)}`}`,
+        `Senaste commits: ${recent === null || recent === "" ? "inga ännu." : `\n${recent}`}`,
       ].join("\n\n");
 
 const loaded = [
   latest && log ? `sessions/${latest.name}` : null,
   state ? "sessions/senaste-lage.md" : null,
-  gitState ? "aktuellt git-läge" : null,
+  status === null ? "en varning om att git-läget inte kunde läsas" : "aktuellt git-läge",
 ].filter(Boolean);
 
 if (loaded.length === 0) {
@@ -71,7 +78,7 @@ if (loaded.length === 0) {
 }
 
 const parts = ["Minneskedjan (.claude/hooks/ladda-lage.js): här är läget från tidigare arbetspass. Utgå från det och fråga Jon om något är oklart."];
-if (gitState) parts.push(`--- Aktuellt git-läge (läst nu, vid sessionsstart) ---\n${gitState}`);
+parts.push(`--- Aktuellt git-läge (läst nu, vid sessionsstart) ---\n${gitState}`);
 if (log) parts.push(`--- Senaste sessionslogg: sessions/${latest.name} ---\n${log}`);
 if (state) parts.push(`--- Automatiskt sparat läge: sessions/senaste-lage.md ---\n${state}`);
 
