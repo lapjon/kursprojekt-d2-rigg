@@ -73,6 +73,23 @@ def test_cli_order_som_inte_finns(cli_env):
     assert resultat.returncode == 1
 
 
+def test_cli_loggar_till_price_calc_log(cli_env, tmp_path):
+    """Låser att loggsökvägen styrs av miljövariabeln PRICE_CALC_LOG.
+
+    CLI med order 1042 ska skriva exakt en rad till den angivna filen, i
+    formatet "ISO-tid order_id total" (codemap avsnitt 3, filer).
+    """
+    logg = tmp_path / "egen.log"
+    env = {**cli_env, "PRICE_CALC_LOG": str(logg)}
+
+    resultat = kor_cli(1042, env)
+
+    assert resultat.returncode == 0
+    rader = logg.read_text().splitlines()
+    assert len(rader) == 1
+    assert rader[0].endswith(" 1042 1187.5")
+
+
 def test_cli_utdataformat_med_rabatt(cli_env):
     """Låser avvikelse 4 (codemap): str(Decimal) ger ojämnt antal decimaler.
 

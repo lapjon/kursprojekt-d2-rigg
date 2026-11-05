@@ -49,8 +49,13 @@ def logg_i_tmp(monkeypatch, tmp_path):
 
 
 @pytest.fixture
-def cli_env():
-    """Miljö för subprocess, med DATABASE_URL pekande på testdatabasen."""
+def cli_env(tmp_path):
+    """Miljö för subprocess, med DATABASE_URL pekande på testdatabasen.
+
+    PRICE_CALC_LOG pekar på en fil i tmp_path, så att CLI-körningar inte
+    skriver i den riktiga src/legacy/price_calc.log.
+    """
     env = os.environ.copy()
     env["DATABASE_URL"] = TEST_DATABASE_URL
+    env["PRICE_CALC_LOG"] = str(tmp_path / "cli.log")
     return env

@@ -10,7 +10,7 @@ DB = os.environ.get("DATABASE_URL", "postgresql://postgres:postgres@localhost:54
 conn = psycopg.connect(DB, autocommit=True)
 
 MOMS = 25
-LOGG = os.path.join(os.path.dirname(__file__), "price_calc.log")
+LOGG = os.environ.get("PRICE_CALC_LOG", os.path.join(os.path.dirname(__file__), "price_calc.log"))
 
 
 class Pris:
