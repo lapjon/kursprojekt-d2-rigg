@@ -49,10 +49,9 @@ def calc_price(order_id):
     total = net + vat
 
     try:
-        f = open(LOGG, "a")
-        f.write("%s %s %s\n" % (datetime.datetime.now().isoformat(), order_id, total))
-        f.close()
-    except:
+        with open(LOGG, "a") as f:
+            f.write("%s %s %s\n" % (datetime.datetime.now().isoformat(), order_id, total))
+    except OSError:
         pass
 
     return Pris(net, vat, total)
