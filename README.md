@@ -17,7 +17,7 @@ pip install -r requirements.txt     # gärna i en virtuell miljö
 cp .env.example .env
 npm run db:up                       # startar PostgreSQL i Docker
 npm run db:reset                    # skapar tabeller och testdata
-npm test                            # ska ge 16 gröna tester
+npm test                            # ska ge 89 gröna tester
 npm start                           # API:t på http://localhost:3000
 ```
 
@@ -35,7 +35,7 @@ curl http://localhost:3000/orders/1042/price -H "X-Customer-Id: 1"
 | Kommando | Vad det gör |
 |---|---|
 | `npm test` | Kör API-testerna mot testdatabasen. |
-| `npm run test:legacy` | Kör Python-testerna (finns inga än). |
+| `npm run test:legacy` | Kör karakteriseringstesterna för `price_calc.py` mot testdatabasen. |
 | `npm run lint` | ESLint med grundkonfiguration. |
 | `npm run typecheck` | TypeScript utan att bygga. |
 | `npm run format` | Formaterar koden med Prettier. |
