@@ -60,3 +60,34 @@ Mönster: automatiken stoppar formfel (tecken, SQL-mönster, förbjudna kommando
 - **Besparing:** ett helt granskningslager, både tid och tokens.
 - **Kvalitetskostnad:** öresfelet i rabattordningen, `_kapa`-typen och de tre falska påståendena om diffen hade gått igenom. `/granska` hittade inget av dem.
 - **Bedömning:** för dyrt. Granskningen är det enda lager som har fångat logikfel.
+
+## Modellval: Sonnet mot Opus
+
+Samma uppgift kördes två gånger den 8 november, i rena sessioner med samma version av Claude Code: `legacy-arkeolog` kartlade `jobs/nightly_report.py`, läste bara och körde inget. Den enda skillnaden var subagentens modell. Huvudagenten var Sonnet i båda.
+
+### Kostnad och tid
+
+| | A: Sonnet | B: Opus | Skillnad |
+|---|---|---|---|
+| Hela sessionen | $0,25 | $0,42 | +67 % |
+| Subagenten | ≈ $0,08 | $0,24 | ≈ 3× |
+| Agentens tid | 37 s | 1 min 23 s | ≈ 2,2× |
+| Subagentens output-tokens | ≈ 4,7k | 8,7k | ≈ 1,9× |
+
+I körning A delar huvudagenten och subagenten på Sonnet-raden i `/usage`. Subagentens del är därför uppskattad genom att huvudagentens del i körning B ($0,18 och 3,0k output) har dragits av.
+
+### Kvalitet
+
+Rapporterna kontrollerades mot `jobs/nightly_report.py`, `db/schema.sql` och `db/seed.sql`. Ingen av dem innehöll felaktiga påståenden, och radnumren stämde i båda.
+
+| | Sonnet | Opus |
+|---|---|---|
+| SQL-injektion, int/Decimal, N+1, tidszon, `created_at` i stället för betaltid | Ja | Ja |
+| Läste schema och seed | Nej, och sa det själv | Ja |
+| Konkreta förväntade värden i testförslagen | Nej | Ja: 1187.5, 0 och 689.56, som alla stämmer |
+| Bevisade injektionen | Nej | Ja: räknade fram 5746.69 kr för alla 8 ordrar, vilket stämmer på öret |
+| Utgången rabatt och order utan rader | Nej | Ja |
+
+### Slutsats
+
+Sonnet räcker för en kartläggning. Opus kostar ungefär tre gånger så mycket per subagent, men levererar färdiga testfall med uträknade värden, och det sparar ett eget steg. `legacy-arkeolog` behåller därför Sonnet som standard. Opus väljs i prompten när förväntade värden ska tas fram, till exempel inför karakteriseringstester.
