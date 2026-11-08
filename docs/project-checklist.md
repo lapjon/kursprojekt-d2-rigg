@@ -27,5 +27,5 @@
 | 5 characterization tests | Python/pytest | `tests/test_price_calc.py`, 6 tester, `94e7800`, `a7c4450` | Klar |
 | 3 refaktoreringar | Små commits | `571e323`, `e6f6afa`, `a7c4450` | Klar |
 | DB-migrationsplan | Expand/contract | `docs/legacy/migreringsplan.md`, `f3fbf01` | Klar (plan, ej genomförd) |
-| Mätningar | tid/tokens/kostnad/fångade fel | `/usage` och fångade fel i sessions/pass-6.md till pass-8.md | Pågår |
+| Mätningar | tid/tokens/kostnad/fångade fel | `docs/matningar.md` | Pågår (Arbete 2 saknas) |
 | Sluttagg | inlamning | Git tag | Inte påbörjad |
