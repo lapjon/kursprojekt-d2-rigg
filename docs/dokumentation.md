@@ -2,7 +2,7 @@
 
 Utkast till svaren i kursens mall (sidorna 4–9), en rubrik per ruta. Svaren är korta, eftersom rutorna i PDF:en är små, och pekar på repot där detaljerna finns. Den här filen är källan, och PDF:en fylls i från den.
 
-Status: sida 4 ifylld. Sidorna 5–9 återstår. Sida 7 väntar på Arbete 2.
+Status: sidorna 4–6 ifyllda. Sidorna 7–9 återstår. Sida 7 väntar på Arbete 2.
 
 ---
 
@@ -59,3 +59,114 @@ ADR 0001 (`docs/adr/0001-inget-totalpris-i-csv-export.md`): exporten innehåller
 - Produktnamn är fri text från kunden. De översätts inte och kan innehålla vad som helst, därav citering och formelneutralisering.
 - Alla belopp är i kronor, och tiden visas i Europe/Stockholm.
 - Seed-datan är påhittad. Ingen kund- eller produktionsdata finns i repot.
+
+---
+
+## Sida 5
+
+### Riggens delar
+
+#### Skills och kommandon
+
+| Skill | Vad den gör | Varför, och vad som gick fel utan den | Så ser man att den fungerar |
+|---|---|---|---|
+| `/tdd` | Ett test i taget: rött av rätt orsak, minsta ändring till grönt, alla kontroller, stanna före commit. | Utan regeln kan ett importfel godtas som "rött". Med skillen stannade agenten och skrev en stubbe, så att testet föll på en riktig assertion (pass 8). | Använd i alla steg i Arbete 1 (`bf03830`–`5fda2b8`). Varje steg har en röd körning i sessionsloggen. |
+| `/granska` | Kör `granskare` och `oversattningsgranskare` parallellt och kontrollerar varje brist mot koden. | Granskarens radnummer var ofta fel (pass 8). Skillen kontrollerar varje brist mot koden, och i pass 9 rättades radnumret i 5 av 9. | `13768f5`. Granskade `203b6fb..HEAD` och gav 9 brister, varav 6 åtgärdade (pass 9). |
+| `/sessionslogg` | Skriver ett utkast till `sessions/pass-N.md` från git och `/usage`. | Loggarna skrevs för hand, och i pass 5 saknades förbrukningen. Skillen följer förra loggens rubriker och skriver `[klistra in /usage]` i stället för att hitta på siffror. | `043d946`, `cf189ab`. Skrev pass 9 och pass 10. |
+
+#### Subagenter: namn, uppgift, verktyg, modell
+
+| Subagent | Uppgift | Verktyg | Modell |
+|---|---|---|---|
+| `kodutforskare` | Kartlägger kod inför en ändring | Read, Grep, Glob | Haiku |
+| `granskare` | Granskar en diff mot standard, krav och säkerhet | Read, Grep, Glob, Bash | Sonnet |
+| `oversattningsgranskare` | Granskar sv/en-strängar mot källsträng och kontext | Read, Grep, Glob | Sonnet |
+| `legacy-arkeolog` | Kartlägger `price_calc.py` inför codemap | Read, Grep, Glob, Bash | Sonnet |
+
+Alla fyra ändrar inga filer. Exempel på nytta: `granskare` hittade fyra otestade acceptanskriterier och `oversattningsgranskare` flaggade "Avbruten", vilket ledde till R11 (pass 8). `legacy-arkeolog` gav codemap-underlaget (`730e5e1`). Filerna ligger i `.claude/agents/`.
+
+#### Hooks: händelse, vad som körs, vad som stoppas
+
+| Hook | Händelse | Vad den gör | Bevis |
+|---|---|---|---|
+| `skydda-tester.js` | PreToolUse | Stoppar `.skip`, `.only`, pytest-skip och borttagna tester, med exitkod 2 | Edit med `.skip` blockerades (pass 6) |
+| `stoppa-shell-redigering.js` | PreToolUse (Bash) | Stoppar filändringar via skalet, så att de syns i diffen | `sed -i` blockerades (pass 6) |
+| `formatera-och-lint.js` | PostToolUse | Prettier och ESLint på ändrad fil, fel tillbaka med exitkod 2 | Fångade `${id}` i SQL och BOM-tecken fem gånger (pass 7, 8) |
+| `aktivera-venv.js` | SessionStart | Aktiverar `.venv`, så att Python hittar `psycopg` | Utan den gav pristestet 404 (pass 2) |
+| `spara-lage.js` | Stop | Minneskedjan, del 1: sparar läget efter varje svar | `sessions/senaste-lage.md` (pass 6) |
+| `ladda-lage.js` | SessionStart | Minneskedjan, del 2: laddar senaste loggen och aktuellt git-läge | "Minneskedjan: laddade …" vid varje start (pass 6, 9) |
+
+#### Delar du övervägde men valde bort, och varför
+
+- **Minneskedjan på `SessionEnd`** i stället för `Stop`: körs inte om terminalen kraschar. `Stop` sparar efter varje svar.
+- **`PreCompact`-hook**: behövs inte, eftersom läget redan sparas efter varje svar och kontexten rensas med `/clear`.
+- **MCP-servrar och plugins (t.ex. Superpowers)**: inget behov, och varje server tar plats i kontexten. Bladet om MCP-behörigheter beskriver hur de skulle sorteras.
+- **Sandlåda eller devcontainer**: se nedan och `docs/beslut-rigg.md`.
+
+### Behörigheter och sandlåda
+
+Reglerna finns i `.claude/settings.json` (`adce56a`, pass 3).
+
+| Allow | Ask | Deny |
+|---|---|---|
+| `npm test`, `npx jest`, `npm run lint`, `typecheck`, `format:check`, `test:legacy`, `pytest`, `git status`, `git diff`, `git log`, `git show` | `npm run format`, `db:reset`, `npm install`/`uninstall`, `pip install`, `docker`, `git add`, `git commit`, `git restore`, `git checkout`, `git stash`, `git reset` | Läsa eller ändra `.env`, `git push`, `git reset --hard`, `git clean`, `rm`, `curl`, `wget`, `npm publish` |
+| Läser bara eller kör kontroller. | Ändrar historik, beroenden eller databas. Människan godkänner. | Oåterkalleligt, hemligheter eller nätverk ut. |
+
+**Var agenten körs:** på Jons Mac i VS Code-terminalen, utan sandlåda. Databasen körs i Docker med enbart seed-data. Skyddet är deny-reglerna, PreToolUse-hookarna och git. Repot har ingen kunddata och inga riktiga hemligheter, så risken bedöms som låg. I ett team med produktionskod hade sandlåda varit förstahandsvalet (`docs/beslut-rigg.md`, avsnitt 1).
+
+---
+
+## Sida 6
+
+### Arbetsslingan och kontexten
+
+#### Stegen från krav till commit
+
+1. Krav med acceptanskriterier (`docs/features/export-csv.md`).
+2. Research med `kodutforskare` (`docs/research.md`).
+3. Plan i små steg (`docs/plan.md`).
+4. Bygg med `/tdd`, ett test i taget. Hookarna kontrollerar varje ändring.
+5. Granska med `/granska` och mot koden i claude.ai.
+6. Jon godkänner diff och commitmeddelande. Commit (ask).
+7. Sessionslogg med `/sessionslogg`.
+
+#### Hur kontexten hanteras
+
+Planen ligger i en fil, inte i chatten. `/clear` körs mellan plansteg (pass 5), så varje steg börjar med en ren kontext. Minneskedjan laddar senaste sessionsloggen och aktuellt git-läge vid start. `/compact` behövdes inte, eftersom stegen är små. Lärdom: `/usage` ska köras före `/clear`, annars försvinner mätningen (`docs/matningar.md`).
+
+#### En commit som exempel
+
+`a7c4450` "refactor(legacy): loggsökväg från PRICE_CALC_LOG". Från den går det att spåra: varför (första CLI-körningen skrev i den riktiga loggen, pass 10), att testet skrevs först och var rött (`FileNotFoundError` i meddelandet), att 6 tester var gröna efter, vilka tre filer som ändrades och vilken avvikelse i `docs/legacy/codemap.md` den hör till. Medförfattarraderna visar att Claude Code skrev koden och att granskningen gjordes i claude.ai.
+
+### Orkestrering och modellval
+
+#### Faserna och filen varje fas lämnar
+
+| Fas | Fil |
+|---|---|
+| Krav | `docs/features/export-csv.md`, ADR 0001 |
+| Research | `docs/research.md` |
+| Plan | `docs/plan.md` |
+| Bygg | tester i `tests/`, kod i `src/` |
+| Granska | granskningsrapporten i sessionsloggen (pass 8, 9) |
+| Verifiera och logga | `sessions/pass-N.md` |
+
+#### Modell per subagent, och varför
+
+`kodutforskare` kör Haiku, eftersom den bara söker och sammanfattar ($0,015 av sessionens $0,30, pass 5). De tre granskande och kartläggande agenterna kör Sonnet, eftersom de måste bedöma kod och språk.
+
+#### Kostnad med ditt val och med en större modell
+
+Samma uppgift för `legacy-arkeolog`: Sonnet ≈ $0,08 och 37 s, Opus $0,24 och 1 min 23 s. Opus gav färdiga testfall med uträknade värden, men kostade ungefär tre gånger så mycket. Sonnet behålls som standard (`docs/matningar.md`).
+
+#### Loop: vad görs om
+
+`/tdd`-varvet (rött, grönt, kontroller), lint-hooken (avvisa, rätta, kör igen) och granskningsvarven (granska, låsande tester, granska igen).
+
+#### Stoppvillkor
+
+Ett test per `/tdd`-varv, och stopp om testet är grönt direkt. Högst tre granskningsvarv (A–C, pass 8). Planerat: efter tre avvisningar för samma lintfel stannar agenten och frågar, och passet pausas vid ungefär 80 % av femtimmarsfönstret (`docs/beslut-rigg.md`, avsnitt 2).
+
+#### Vad du körde parallellt i worktrees, och varför (eller varför inte)
+
+Inga worktrees i Arbete 1 och 3: stegen bygger på varandra, och parallella körningar hade delat testdatabasen. Parallellt kördes bara de två granskarna i `/granska`, som läser och inte ändrar. Planerat: PR:en i Arbete 2 checkas ut i en egen worktree (`docs/beslut-rigg.md`, avsnitt 3).
