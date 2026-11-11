@@ -2,7 +2,7 @@
 
 Utkast till svaren i kursens mall (sidorna 4–9), en rubrik per ruta. Svaren är korta, eftersom rutorna i PDF:en är små, och pekar på repot där detaljerna finns. Den här filen är källan, och PDF:en fylls i från den.
 
-Status: sidorna 4–6 ifyllda. Sidorna 7–9 återstår. Sida 7 väntar på Arbete 2.
+Status: sidorna 4–6, 8 och 9 ifyllda. Sida 7 väntar på Arbete 2.
 
 ---
 
@@ -170,3 +170,93 @@ Ett test per `/tdd`-varv, och stopp om testet är grönt direkt. Högst tre gran
 #### Vad du körde parallellt i worktrees, och varför (eller varför inte)
 
 Inga worktrees i Arbete 1 och 3: stegen bygger på varandra, och parallella körningar hade delat testdatabasen. Parallellt kördes bara de två granskarna i `/granska`, som läser och inte ändrar. Planerat: PR:en i Arbete 2 checkas ut i en egen worktree (`docs/beslut-rigg.md`, avsnitt 3).
+
+---
+
+## Sida 8
+
+### Modernisering
+
+#### Codemap: moduler, ansvar och beroenden i den äldre delen
+
+`docs/legacy/codemap.md` (`730e5e1`). `src/legacy/price_calc.py` har `_kapa` (trunkerar till två decimaler), `calc_price` (rabatt, summa, moms, loggrad) och ett CLI. Anropare: `legacyPrice.ts` (via `execFile`, en process per anrop), `routes/orders.ts` och `jobs/nightly_report.py`. Läser `orders`, `order_lines` och `discounts`, skriver inget till databasen. Öppnar databasanslutningen redan vid import. 12 avvikelser, bland annat SQL-injektion, trunkering och utgångna rabatter. Underlaget kom från `legacy-arkeolog` och granskades mot koden: två fel rättades.
+
+#### Karakteriseringstester: vilket beteende de fångar, även buggar
+
+6 pytest-tester i `tests/test_price_calc.py` (`94e7800`, `a7c4450`) mot testdatabasen `butik_test`:
+- 1042 utan rabatt: 950 / 237.5 / 1187.5.
+- 1044: momsen trunkeras till 44.97 (avrundning hade gett 44.98). Bugg som låses.
+- 1045: utgången rabatt GAMMAL15 gäller ändå. Bugg som låses.
+- CLI med 9999: `{"error": "finns inte"}` och exit 1.
+- CLI med 1041: ojämna decimaler (`"736.0"`). Bugg som låses.
+- Loggsökvägen styrs av `PRICE_CALC_LOG`.
+Bevisat rött genom att tillfälligt förvänta 44.98. Utan databas avbryts körningen med en instruktion om hur felet rättas.
+
+#### Stegen: minst tre, med commit och grönt efter varje
+
+1. `571e323`: parametriserad SQL i de tre frågorna. 5 gröna.
+2. `e6f6afa`: `with open` och `except OSError` i stället för bar `except`. 5 gröna.
+3. `a7c4450`: loggsökväg från `PRICE_CALC_LOG`, test först (rött med `FileNotFoundError`). 6 gröna.
+
+#### Migreringsplan för databasen i expand/contract-steg, och vilka steg som går att backa
+
+`docs/legacy/migreringsplan.md` (`f3fbf01`): spara `net`, `vat` och `total` på `orders`. Sju steg: expand (nullbara kolumner), dubbelskrivning, ifyllnad, byt läsare, ny beräkning i TypeScript, CHECK/NOT NULL, contract. Steg 1–6 går att backa utan dataförlust. Steg 7 är punkten utan återvändo, eftersom kolumnerna då är enda källan till priset. Granskningen lade till att rabatten måste trunkeras efter subtraktionen (10,01 kr med 15 % ger 8,50, inte 8,51).
+
+### Mätningar
+
+Från `docs/matningar.md`. Kostnad och tokens är ett golv: `/usage` visar bara sessionen efter senaste `/clear`, och arbetet i claude.ai mäts inte.
+
+| | Riggen | Arbete 1 | Arbete 3 |
+|---|---|---|---|
+| Tokens (output) | ≈ 15k | ≈ 53k | ≈ 65k |
+| Tid | ≈ 4 h 15 min | ≈ 4 h 30 min | ≈ 1 h 10 min |
+| Kostnad | $0,93 (≈ 9 kr) | $1,59 (≈ 16 kr) | $1,48 (≈ 15 kr) |
+
+#### Vad kontrollerna fångade: antal och exempel
+
+Automatik 6 (BOM-tecken, `${id}` i SQL, `.skip` och `sed -i` stoppade). Subagenter minst 8 (fyra otestade kriterier, "Avbruten"). Egna tester och research 3 (OWASP-tecknen). Granskning i claude.ai 10 (falska påståenden om diffen ×3, öresfelet i rabattordningen). Körning 1. Jon manuellt 1 (`bestallningar.csv` utan ä). Automatiken tar formfel, granskningen logikfel.
+
+#### Två besparingar, och vad de kostar i kvalitet
+
+1. **`/tdd` på Haiku** (stod för 52 % av förbrukningen i pass 7): ungefär en femtedel av kostnaden, men svagare tester. Rimligt för enkla steg.
+2. **Slopa granskningen i claude.ai**: sparar ett helt lager, men öresfelet, `_kapa`-typen och de falska diffpåståendena hade gått igenom. För dyrt.
+
+---
+
+## Sida 9
+
+### Riggen i ett team
+
+#### Första steget i ett team på fem
+
+`CLAUDE.md`, `docs/standard.md`, hookarna för lint, format och typkontroll, och deny-reglerna. Mest skydd för minst inlärning, och reglerna gäller alla från första dagen (`docs/beslut-rigg.md`, avsnitt 4).
+
+#### Vad du väntar med, och varför
+
+Obligatorisk `/tdd` tills teamet sett den fungera på några uppgifter. Subagenterna tills någon behöver dem. Minneskedjan, eftersom `senaste-lage.md` är personlig och behöver en lösning för flera personer.
+
+#### Ägare, ändringar och översyn
+
+En riggägare som roterar varje kvartal. Ändringar i `.claude/` och `docs/standard.md` via PR med granskning, och varje ny hook ska ha ett test som visar att den stoppar. Översyn en gång i månaden utifrån `docs/matningar.md`: vilka kontroller fångade något och vilka kostade utan att fånga något.
+
+#### Vad som följer med om modellen eller verktyget byts ut
+
+Följer med: `CLAUDE.md`, `docs/standard.md`, ESLint, Prettier, tsc, testerna, hook-skripten (vanlig Node) och sessionsloggarna. Följer inte med: `model:`-fälten, Claude Codes namn på hook-händelser och behörighetsformat, och formuleringar i skills som är anpassade efter Sonnet.
+
+### Risker
+
+| Risk | Hur den upptäcks | Vad riggen gör |
+|---|---|---|
+| Agenten försvagar tester för att få grönt | Diffgranskning | `skydda-tester.js` stoppar `.skip`, `.only` och borttagna tester |
+| Osäker SQL | ESLint och `granskare` | ESLint-regel mot `${}` i SQL, som fångade `${id}` (pass 7) |
+| Falska påståenden om diff, radnummer eller kod | Granskning mot koden | Inget automatiskt. Människan verifierar varje rapport |
+| Inaktuellt läge från minneskedjan | Git-läget i startutskriften | `ladda-lage.js` läser aktuellt git-läge vid start |
+| Hemligheter eller kunddata läcker | Granskning | deny för `.env`, `curl` och `wget`, och regeln mot kunddata i `CLAUDE.md` |
+
+### Lärdomar
+
+#### Vad du skulle ändra först om du fick en vecka till
+
+1. Mäta konsekvent: en hook eller skill som sparar `/usage` före `/clear`, så att mätningen inte får luckor.
+2. Ett tak i lint-loopen som hook: efter tre avvisningar för samma fel stannar agenten och frågar.
+3. Låta minneskedjan spara läget efter commit, inte bara när agenten stannar, så att läget efter `/clear` inte blir inaktuellt (pass 7).
