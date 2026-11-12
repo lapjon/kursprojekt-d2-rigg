@@ -2,7 +2,7 @@
 
 Utkast till svaren i kursens mall (sidorna 4–9), en rubrik per ruta. Svaren är korta, eftersom rutorna i PDF:en är små, och pekar på repot där detaljerna finns. Den här filen är källan, och PDF:en fylls i från den.
 
-Status: sidorna 4–6, 8 och 9 ifyllda. Sida 7 väntar på Arbete 2.
+Status: alla sidor ifyllda. Sida 7 (granskning av agentgenererad kod) kompletteras enligt kursledarens anvisning.
 
 ---
 
@@ -170,6 +170,55 @@ Ett test per `/tdd`-varv, och stopp om testet är grönt direkt. Högst tre gran
 #### Vad du körde parallellt i worktrees, och varför (eller varför inte)
 
 Inga worktrees i Arbete 1 och 3: stegen bygger på varandra, och parallella körningar hade delat testdatabasen. Parallellt kördes bara de två granskarna i `/granska`, som läser och inte ändrar. Planerat: PR:en i Arbete 2 checkas ut i en egen worktree (`docs/beslut-rigg.md`, avsnitt 3).
+
+---
+
+## Sida 7
+
+### Styrd kodgenerering
+
+#### Kodstandarden i verktyg: regler som säger nej, och deras felmeddelanden
+
+`formatera-och-lint.js` kör Prettier och ESLint efter varje ändring och skickar felen tillbaka till agenten med exitkod 2. Utöver grundreglerna finns två regler ur `docs/standard.md` i `eslint.config.js`:
+
+- **Parametriserad SQL** (`no-restricted-syntax`): "SQL får inte byggas med strängmall eller sammanslagning. Använd $1, $2 … och skicka värdena i en lista: db.query(sql, [värde]). Se docs/standard.md." Fångade `${id}` i en fråga (pass 7).
+- **Osynliga tecken** (`no-irregular-whitespace` med `skipStrings: false`, `3ba60ec`): kommentaren säger "Skriv dem som escapesekvenser, till exempel ﻿". Fångade BOM-tecken fem gånger (pass 5–8).
+
+`npm run typecheck` (tsc) och `npm run format:check` körs före varje commit. PreToolUse-hookarna säger nej innan något händer: `skydda-tester.js` till `.skip`, `.only` och borttagna tester, och `stoppa-shell-redigering.js` till filändringar via skalet.
+
+#### Granskningslagren: vad varje lager fångar
+
+| Lager | Fångar | Exempel |
+|---|---|---|
+| Hooks och ESLint | Formfel och förbjudna mönster | BOM, `${id}` i SQL, `.skip` |
+| Tester | Beteende som ändras | Röda karakteriseringstester vid ändrat beteende |
+| `/granska` (granskare, översättningsgranskare) | Otestade krav och osäkra översättningar | 4 otestade kriterier, "Avbruten" (pass 8) |
+| Granskning i claude.ai mot koden | Logikfel och falska påståenden | Öresfelet i rabattordningen, falska diffpåståenden ×3 |
+| Jon | Det som kräver omdöme | Filnamnet `bestallningar.csv` utan ä (R12) |
+
+#### Var sitter människan i granskningen, och varför just där
+
+Vid commit. Agenten committar aldrig själv (git commit är ask), och Jon läser diffen och commitmeddelandet först. Där samlas alla lagrens resultat, och det är sista stället där ett fel kan stoppas billigt. Logikfel och falska påståenden har bara fångats där.
+
+### Granskning av agentgenererad kod
+
+**Ingen PR eller uppgift har delats ut före inlämningen.** Kursledaren meddelade att uppgiften kan bli en uppgift som löses med riggen i stället för en PR, och att kompletteringen beskrivs efter inlämningen. Rutorna nedan kompletteras enligt den anvisningen.
+
+#### Säkerhet
+
+Kompletteras enligt kursledarens anvisning.
+
+#### Struktur
+
+Kompletteras enligt kursledarens anvisning.
+
+#### Kodstandard
+
+Kompletteras enligt kursledarens anvisning.
+
+#### Vad automatiken hittade, och vad bara du hittade
+
+Från Arbete 1 och 3, tills PR:en finns: automatiken hittade formfel, nämligen osynliga tecken, osäker SQL, oanvända variabler och försök att stänga av tester. Bara granskningen och Jon hittade logikfel och påståenden som inte stämde: öresfelet i rabattordningen, `_kapa`-typen, agentens tre felaktiga påståenden om diffen och filnamnet utan ä (`docs/matningar.md`).
 
 ---
 
