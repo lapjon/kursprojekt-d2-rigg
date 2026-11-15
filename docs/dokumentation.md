@@ -10,7 +10,7 @@ Status: alla sidor ifyllda. Sida 7 (granskning av agentgenererad kod) kompletter
 
 **Namn:** Jon Laprevote
 **Kodbas:** Delkursens övningsprojekt (butikens API och äldre prisberäkning)
-**Repo och tagg:** [repo-URL fylls i vid inlämning], taggen `inlamning`
+**Repo och tagg:** https://github.com/lapjon/kursprojekt-d2-rigg, taggen `inlamning`
 
 ### Kodbas, krav och beslut
 

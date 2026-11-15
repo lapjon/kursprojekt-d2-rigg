@@ -1,3 +1,21 @@
+# Kursprojekt: En rigg för en kodbas
+
+Jon Laprevotes kursprojekt i Delkurs 2. Repot innehåller kursens övningsprojekt (beskrivet nedan) och riggen som styr kodagenten Claude Code, använd på en ny funktion och en modernisering av äldre kod.
+
+| Vad | Var |
+|---|---|
+| Dokumentationen enligt kursens mall | [`docs/dokumentation.md`](docs/dokumentation.md) |
+| Kraven och var de är uppfyllda | [`docs/project-checklist.md`](docs/project-checklist.md) |
+| Riggen: skills, subagenter, hooks, behörigheter | [`.claude/`](.claude/), [`CLAUDE.md`](CLAUDE.md), [`docs/standard.md`](docs/standard.md) |
+| Sessionsloggar efter varje arbetspass | [`sessions/`](sessions/) |
+| Arbete 1: CSV-export på sv/en | [`docs/features/export-csv.md`](docs/features/export-csv.md), [`docs/plan.md`](docs/plan.md), [ADR 0001](docs/adr/0001-inget-totalpris-i-csv-export.md) |
+| Arbete 3: modernisering av `price_calc.py` | [`docs/legacy/codemap.md`](docs/legacy/codemap.md), [`docs/legacy/migreringsplan.md`](docs/legacy/migreringsplan.md), `tests/test_price_calc.py` |
+| Mätningar och beslut | [`docs/matningar.md`](docs/matningar.md), [`docs/beslut-rigg.md`](docs/beslut-rigg.md) |
+
+Slutversionen är taggad `inlamning`.
+
+---
+
 # Övningsprojekt: butikens API
 
 Övningsprojektet för delkursen *AI-assisterad systemutveckling*. Det är kodbasen du bygger din rigg för i kursprojektet.
