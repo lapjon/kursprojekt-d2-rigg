@@ -20,12 +20,13 @@
 | Hook 5 | `ladda-lage.js` (SessionStart, minneskedjan) | `aa4d7cb`, sessions/pass-6.md. Läser git direkt sedan `1f66af5` och `975b034`, sessions/pass-9.md. | Verifierad |
 | Hook 6 | `formatera-och-lint.js` (PostToolUse) | `aa4d7cb`, sessions/pass-6.md | Verifierad |
 | Allow/Ask/Deny | `.claude/settings.json`, anpassad till detta repo | `.claude/settings.json`, sessions/pass-3.md | Verifierad |
-| Sessionslogg | En fil per arbetspass | `sessions/pass-1.md` till `pass-10.md` | Pågår |
+| Sessionslogg | En fil per arbetspass | `sessions/pass-1.md` till `pass-13.md` | Pågår |
 | Ny funktion | #8 CSV-export, utökad med språkstöd för sv och en | docs/features/export-csv.md. 89 gröna tester, curl-kontroll och import i Google Sheets (`docs/bilder/export-sv-google-sheets.png`), sessions/pass-8.md. | Klar |
-| Agentkod-review | Lärarens PR | TBD | Inte påbörjad |
+| Agentkod-review | Lärarens PR eller uppgift | Ingen PR eller uppgift delad före inlämningen. Kompletteras enligt kursledarens anvisning (sessions/pass-13.md). | Kompletteras |
 | Legacy codemap | price_calc.py + callers | `docs/legacy/codemap.md`, `730e5e1` | Klar |
 | 5 characterization tests | Python/pytest | `tests/test_price_calc.py`, 6 tester, `94e7800`, `a7c4450` | Klar |
 | 3 refaktoreringar | Små commits | `571e323`, `e6f6afa`, `a7c4450` | Klar |
 | DB-migrationsplan | Expand/contract | `docs/legacy/migreringsplan.md`, `f3fbf01` | Klar (plan, ej genomförd) |
-| Mätningar | tid/tokens/kostnad/fångade fel | `docs/matningar.md` | Pågår (Arbete 2 saknas) |
+| Mätningar | tid/tokens/kostnad/fångade fel | `docs/matningar.md`, modellval Sonnet mot Opus `48d9228` | Klar (Arbete 2 kompletteras) |
+| Dokumentation | Mallen sida 4–9 | `docs/dokumentation.md` (`a43e34b`, `3058d7c`, `5510ec2`, `098383d`), beslut i `docs/beslut-rigg.md` | Klar (sida 7 del 2 kompletteras) |
 | Sluttagg | inlamning | Git tag | Inte påbörjad |
