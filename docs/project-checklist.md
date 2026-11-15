@@ -29,4 +29,4 @@
 | DB-migrationsplan | Expand/contract | `docs/legacy/migreringsplan.md`, `f3fbf01` | Klar (plan, ej genomförd) |
 | Mätningar | tid/tokens/kostnad/fångade fel | `docs/matningar.md`, modellval Sonnet mot Opus `48d9228` | Klar (Arbete 2 kompletteras) |
 | Dokumentation | Mallen sida 4–9 | `docs/dokumentation.md` (`a43e34b`, `3058d7c`, `5510ec2`, `098383d`), beslut i `docs/beslut-rigg.md` | Klar (sida 7 del 2 kompletteras) |
-| Sluttagg | inlamning | Git tag | Inte påbörjad |
+| Sluttagg | inlamning | Git-taggen `inlamning`, pushad till https://github.com/lapjon/kursprojekt-d2-rigg (sessions/pass-13.md) | Klar |

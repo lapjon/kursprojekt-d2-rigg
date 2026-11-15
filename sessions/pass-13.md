@@ -49,6 +49,14 @@ Utanför repot:
 - Komplettering av Arbete 2 och sida 7 enligt kursledarens anvisning.
 - Genomgång av projektet (del 1–6) och eventuell inspelning, för Jons förståelse och en möjlig muntlig redovisning.
 
+## Inlämning 15/11
+
+- Eget repo på GitHub: https://github.com/lapjon/kursprojekt-d2-rigg (publikt). Pushat med remoten `mitt`. `origin` (kursledarens repo) har en ogiltig push-adress, så den kan inte ta emot en push.
+- `README.md` fick en vägvisare överst med länkar till dokumentationen, checklistan, riggen, sessionsloggarna och arbetena (`e6fb76e`).
+- Repo-adressen ifylld på sida 4 i `docs/dokumentation.md` och i PDF:en.
+- Taggen `inlamning` sätts på commiten som lägger till det här avsnittet.
+- Till Learnpoint: PDF:en med dokumentationen och en zip-fil av repot, gjord från en ren klon av taggen med git-historiken, utan `node_modules`, `.venv` och `.env`.
+
 ## Förbrukning
 
 - Allt arbete gjordes i claude.ai och mättes inte med `/usage`.
