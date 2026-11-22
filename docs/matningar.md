@@ -91,3 +91,20 @@ Rapporterna kontrollerades mot `jobs/nightly_report.py`, `db/schema.sql` och `db
 ### Slutsats
 
 Sonnet räcker för en kartläggning. Opus kostar ungefär tre gånger så mycket per subagent, men levererar färdiga testfall med uträknade värden, och det sparar ett eget steg. `legacy-arkeolog` behåller därför Sonnet som standard. Opus väljs i prompten när förväntade värden ska tas fram, till exempel inför karakteriseringstester.
+
+## Arbete 2: granskning av PR 214
+
+Två körningar på samma diff (`main...HEAD`, 6 filer, 108 rader), med `/clear` emellan. Detaljer i `docs/granskning-pr-214.md`.
+
+| | Körning 1: kursledarens prompt | Körning 2: `/granska` |
+|---|---|---|
+| Kostnad | $0,52 | $0,40 |
+| API-tid / total tid | 1 min 45 s / 4 min 12 s | 1 min 28 s / 4 min 33 s |
+| Sonnet output / cache read / cache write | 13,0k / 648,6k / 105,1k | 11,5k / 633,3k / 59,1k |
+| Brister | 14 | 18 |
+| Fel radnummer i rapporten | 0 | 13 av 17 från `granskare`, alla rättade av skillen |
+
+Automatiska kontroller (tester, lint, typecheck, format): 0 av 22 brister. Den oberoende granskningen i claude.ai: 4 brister som ingen av körningarna hittade, bland annat att svaret och databasen visar olika belopp.
+
+Slutsats: `/granska` var billigare och hittade fler brister än den fria prompten, eftersom den tvingar fram en kontroll av varje fynd mot koden. Agenten kan inte starta `/granska` själv (`disable-model-invocation: true`), och valde därför den inbyggda `code-review` när den bads använda "de skills som granskar kod".
+
