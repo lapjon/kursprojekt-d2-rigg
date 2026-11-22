@@ -2,7 +2,7 @@
 
 Utkast till svaren i kursens mall (sidorna 4–9), en rubrik per ruta. Svaren är korta, eftersom rutorna i PDF:en är små, och pekar på repot där detaljerna finns. Den här filen är källan, och PDF:en fylls i från den.
 
-Status: alla sidor ifyllda. Sida 7 (granskning av agentgenererad kod) kompletteras enligt kursledarens anvisning.
+Status: alla sidor ifyllda.
 
 ---
 
@@ -202,23 +202,32 @@ Vid commit. Agenten committar aldrig själv (git commit är ask), och Jon läser
 
 ### Granskning av agentgenererad kod
 
-**Ingen PR eller uppgift har delats ut före inlämningen.** Kursledaren meddelade att uppgiften kan bli en uppgift som löses med riggen i stället för en PR, och att kompletteringen beskrivs efter inlämningen. Rutorna nedan kompletteras enligt den anvisningen.
+PR 214 (returer, `6a4301e`) delades ut efter inlämningen och granskades 2026-11-22 på en egen gren, utan att rätta något. Alla detaljer finns i `docs/granskning-pr-214.md`.
 
 #### Säkerhet
 
-Kompletteras enligt kursledarens anvisning.
+- `returnService.ts:3`: hårdkodad API-nyckel, som dessutom läcker via `label_url` (`:32`). Ingen kontroll i riggen. Förslag: en hook som söker efter hemligheter.
+- `returns.ts:12`: kund-id tas från body. Hittad av `granskare`.
+- `returnService.ts:16-19`: ingen ägarkontroll, så vem som helst kan få återbetalning för andras ordrar. Ett 403-test och `granskare` hade stoppat den.
+- `returnService.ts:22`: e-post loggas. Förslag: ESLint `no-console`.
 
 #### Struktur
 
-Kompletteras enligt kursledarens anvisning.
+- `returnService.ts:27-30`: flyttal och hårdkodad moms i stället för `calcPrice`. Rabatten ignoreras, så order 1041 får 920 kr i stället för 736 kr.
+- `returnService.ts:16-37`: ingen transaktion, inget skydd mot dubbla returer och ingen kontroll av status.
+- `returnService.ts:18`, `returns.ts:9-18`: `throw` och en egen 500-hantering i stället för `Result`.
+- `db/schema.sql`: ingen migrering.
 
 #### Kodstandard
 
-Kompletteras enligt kursledarens anvisning.
+- `returnService.ts:5-9`: snake_case och belopp som tal. Förslag: ESLint `naming-convention`.
+- `tests/returns.test.ts`: bara lyckade fall, och "sparar returen" kontrollerar inte att något sparades.
+- `docs/api.md:14`: bara 201 är dokumenterad.
+- En enda commit utan plan eller ADR.
 
 #### Vad automatiken hittade, och vad bara du hittade
 
-Från Arbete 1 och 3, tills PR:en finns: automatiken hittade formfel, nämligen osynliga tecken, osäker SQL, oanvända variabler och försök att stänga av tester. Bara granskningen och Jon hittade logikfel och påståenden som inte stämde: öresfelet i rabattordningen, `_kapa`-typen, agentens tre felaktiga påståenden om diffen och filnamnet utan ä (`docs/matningar.md`).
+Automatiken hittade **ingenting**: 92 Jest- och 6 pytest-tester, lint, typecheck och format var alla gröna. Riggens granskning hittade 18 brister: kursledarens prompt 14 ($0,52) och `/granska` 18 ($0,40), där `/granska` dessutom rättade 13 fel radnummer. Den oberoende granskningen hittade 4 till: avrundningen (`249.875` mot `249.88`), rabattfelet i kronor, att migreringen saknas och att allt ligger i en enda commit. Gruppdiskussionen genomfördes inte, eftersom jag inte deltog på seminariet.
 
 ---
 
